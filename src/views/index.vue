@@ -4,12 +4,14 @@
       <p>不过是大梦一场空</p>
       <p>不过是孤影照惊鸿</p>
       <my-input v-model="value" :placeholder="placeholder"></my-input>
+      <van-button type="primary">主要按钮</van-button>
   </div>
 </template>
 
 <script>
 //引入组件
-import myinput from '../components/myinput.vue'
+import myinput from '../components/myinput.vue';
+import {Button} from 'vant';
 
 export default {
     data() {
@@ -20,7 +22,8 @@ export default {
     },
     //注册组件
     components: {
-        'my-input': myinput
+        'my-input': myinput,
+        [Button.name]: Button
     },
     updated() {
         console.log(this.value);
