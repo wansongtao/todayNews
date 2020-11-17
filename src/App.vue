@@ -23,6 +23,7 @@ html,body {
   font-family: 'kaiti', 'songti', sans-serif;
   font-size: 16px;
   line-height: 1.4em;
+  background-color: #f2f2f2;
 }
 
 #app {

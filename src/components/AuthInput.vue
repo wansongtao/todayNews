@@ -37,9 +37,11 @@ export default {
 
 input {
   width: 100%;
+  margin-bottom: 10 / 360 * 100vw;
   line-height: 40 / 360 * 100vw;
   font-size: 18 / 360 * 100vw;
   border: none;
   border-bottom: 1px solid #333;
+  background-color: #f2f2f2;
 }
 </style>
