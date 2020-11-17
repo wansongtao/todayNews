@@ -26,5 +26,8 @@ Vue.use(Vant);
 //注册toast轻提示框，注册后会自定挂载在vue的原型上，可以通过this.$toast调用
 Vue.use(Toast);
 
+// 将所有 Toast 的展示时长设置为 1500 毫秒
+Toast.setDefaultOptions({ duration: 1500 });
+
 //挂到原型上
 Vue.prototype.$axios = axios;
