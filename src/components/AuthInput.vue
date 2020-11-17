@@ -5,8 +5,8 @@
       :type="type"
       :value="value"
       :placeholder="placeholder"
-      @input="updateValue"
       :class="{ error: isAdd }"
+      @input="sendValue"
       @blur="verifyInput"
       v-if="isfocus"
       v-focus
@@ -16,8 +16,8 @@
       :type="type"
       :value="value"
       :placeholder="placeholder"
-      @input="updateValue"
       :class="{ error: isAdd }"
+      @input="sendValue"
       @blur="verifyInput"
       v-else
     />
@@ -48,7 +48,7 @@ export default {
   },
   data() {
     return {
-      isAdd: false,
+      isAdd: false
     };
   },
   directives: {
@@ -62,6 +62,7 @@ export default {
     value() {
       //监听用户输入的值是否符合规范
       if (this.value.length != 0) {
+        
         const regExp = new RegExp(this.pattern);
 
         if (regExp.test(this.value)) {
@@ -75,8 +76,7 @@ export default {
     },
   },
   methods: {
-    updateValue(event) {
-      //将修改后的值发送给父组件
+    sendValue(event) {
       this.$emit("input", event.target.value);
     },
     verifyInput(event) {
@@ -96,6 +96,7 @@ export default {
         }
       }
     },
+    
   },
 };
 </script>
