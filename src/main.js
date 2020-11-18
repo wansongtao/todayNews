@@ -31,3 +31,8 @@ Toast.setDefaultOptions({ duration: 1500 });
 
 //挂到原型上
 Vue.prototype.$axios = axios;
+
+/**
+ * @description 服务器地址
+ */
+Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';

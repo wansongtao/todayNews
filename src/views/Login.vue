@@ -14,6 +14,7 @@
       msg="请输入3-6位字母/数字组合且以字母开头的用户名"
     ></auth-input>
     <auth-input
+      type="password"
       v-model="userPwd"
       placeholder="密码"
       pattern="^[a-zA-Z][\w]{5,15}$"
@@ -65,7 +66,7 @@ export default {
 
 .closeBtn {
   span {
-    font-size: 27 / 360 * 100vw;
+    font-size: 32 / 360 * 100vw;
     color: rgb(95, 95, 95);
   }
 }
