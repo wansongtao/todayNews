@@ -12,12 +12,14 @@
       :isfocus="true"
       pattern="^[a-zA-Z][a-zA-Z0-9]{2,5}$"
       msg="请输入3-6位字母/数字组合且以字母开头的用户名"
+      @isVerify="isVerify"
     ></auth-input>
     <auth-input
       v-model="nickname"
       placeholder="昵称"
       pattern="^[\u4e00-\u9fa5]{2,7}$"
       msg="请输入2-7位中文昵称"
+      @isVerify="isVerify"
     ></auth-input>
     <auth-input
       type="password"
@@ -25,6 +27,7 @@
       placeholder="密码"
       pattern="^[a-zA-Z][\w]{5,15}$"
       msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
+      @isVerify="isVerify"
     ></auth-input>
     <auth-btn text="注册" @click="userRegister"></auth-btn>
   </div>
@@ -88,7 +91,7 @@ export default {
             })
             .catch((err) => {
               _this_.isRegister = false;
-              _this_.$toast.fail('服务器繁忙，请稍后再试。');
+              _this_.$toast.fail("服务器繁忙，请稍后再试。");
               console.log(err);
             });
         } else {
@@ -104,10 +107,17 @@ export default {
         })
         .then(() => {
           //用户点击确认按钮
-          router.push("/");  //返回到首页
+          router.push("/"); //返回到首页
         })
-        .catch(() => {});  //用户点击取消按钮
-    }
+        .catch(() => {}); //用户点击取消按钮
+    },
+    /**
+     * @description 自定义事件，当用户输入不合法时不发送请求
+     * @param {Boolean} isValidate 子组件传过来的值，合法true
+     */
+    isVerify(isValidate) {
+      this.isRegister = !isValidate;
+    },
   },
 };
 </script>

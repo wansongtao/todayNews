@@ -48,6 +48,9 @@ export default {
   },
   data() {
     return {
+      /**
+       * @description 是否要给输入框添加一个错误类
+       */
       isAdd: false
     };
   },
@@ -85,14 +88,21 @@ export default {
         const regExp = new RegExp(this.pattern);
 
         if (!regExp.test(this.value)) {
+          //用户输入不符合规格
           this.isAdd = true;
           this.$toast.fail(this.msg);
 
           //选中错误文本
           event.target.select();
+
+          //用户输入不符合规范，发送一个false值给父组件
+          this.$emit('isVerify', false);
           // setTimeout(() => {
           //   document.getElementById('myinput').focus();
           // }, 1600);
+        }else {
+          //通过了验证，将验证结果发送给父组件
+          this.$emit('isVerify', true);
         }
       }
     },
