@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="closeBtn">
-      <span class="iconfont iconx"></span>
+      <span class="iconfont iconx" @click="closeHandler"></span>
     </div>
     <div class="logo">
       <span class="iconfont iconnew"></span>
@@ -27,6 +27,7 @@
 <script>
 import AuthInput from "../components/AuthInput";
 import AuthBtn from "../components/AuthBtn";
+import router from "../router/index";
 
 export default {
   data() {
@@ -58,6 +59,17 @@ export default {
       //   },
       // });
     },
+    closeHandler() {
+      //用户点击关闭按钮后返回首页
+      this.$dialog
+        .confirm({
+          message: "确定不登录吗？登录后可以得到更优的体验哦，亲。",
+        })
+        .then(() => {
+          router.push("/");  //返回到首页
+        })
+        .catch(() => {});
+    }
   },
 };
 </script>
