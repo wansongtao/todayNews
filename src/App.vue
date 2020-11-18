@@ -11,6 +11,8 @@
 
 <style>
 /* @import url('../public/css/base.css'); */
+@import url("//at.alicdn.com/t/font_2210025_e5aasth4egc.css");
+
 * {
   margin: 0;
   padding: 0;

@@ -42,7 +42,9 @@ export default {
       userName: "",
       nickname: "",
       userPwd: "",
-      //用来判断用户是否已经发送了注册请求
+      /**
+       * @description 记录用户是否发送了注册请求，true发送了
+       */
       isRegister: false,
     };
   },
@@ -58,6 +60,7 @@ export default {
           const _this_ = this;
           _this_.isRegister = true;
 
+          //发送注册请求
           this.$axios
             .post(this.$serverUrl + "/register", {
               username: this.userName,
@@ -68,9 +71,11 @@ export default {
               const data = res.data;
 
               if (data.statusCode) {
+                //注册失败
                 this.$toast.fail(data.message);
                 _this_.isRegister = false;
               } else {
+                //注册成功
                 this.$toast.success(data.message);
 
                 //跳转登录页
@@ -83,6 +88,7 @@ export default {
             })
             .catch((err) => {
               _this_.isRegister = false;
+              _this_.$toast.fail('服务器繁忙，请稍后再试。');
               console.log(err);
             });
         } else {
@@ -97,17 +103,16 @@ export default {
           message: "确定不注册一个账号吗？注册账号后可以得到更优的体验哦，亲。",
         })
         .then(() => {
+          //用户点击确认按钮
           router.push("/");  //返回到首页
         })
-        .catch(() => {});
+        .catch(() => {});  //用户点击取消按钮
     }
   },
 };
 </script>
 
 <style lang="less" scoped>
-@import url("//at.alicdn.com/t/font_2210025_e5aasth4egc.css");
-
 .container {
   padding: 20 / 360 * 100vw;
   // background-color: #f2f2f2;

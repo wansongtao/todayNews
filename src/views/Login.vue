@@ -27,6 +27,7 @@
 <script>
 import AuthInput from "../components/AuthInput";
 import AuthBtn from "../components/AuthBtn";
+//引入路由，才能使用router.push()跳转页面
 import router from "../router/index";
 
 export default {
@@ -34,7 +35,9 @@ export default {
     return {
       userName: "",
       userPwd: "",
-      //判断用户是否发送了登录请求
+      /**
+       * @description 记录用户是否发送了登录请求，true发送了
+       */
       isLogin: false,
     };
   },
@@ -44,11 +47,13 @@ export default {
   },
   methods: {
     userLogin() {
+      //判断用户是否已经发送了登录请求，发送了则不重复发送
       if (!this.isLogin) {
         if (this.userName && this.userPwd) {
           const _this_ = this;
           _this_.isLogin = true;
           
+          //发送请求
           this.$axios.post(this.$serverUrl + '/login', {
             username: _this_.userName,
             password: _this_.userPwd
@@ -56,12 +61,15 @@ export default {
             const data = res.data;
 
             if(data.statusCode) {
+              //登录失败
               _this_.isLogin = false;
               _this_.$toast.fail(data.message);
             } else {
+              //登录成功
               _this_.$toast.success(data.message);
               localStorage.setItem('token', data.data.token);
 
+              //1.5s后跳转到首页
               setTimeout(() => {
                 _this_.isLogin = false;
                 router.push('/');
@@ -69,7 +77,7 @@ export default {
             }
           }).catch(err => {
             _this_.isLogin = false;
-
+            _this_.$toast.fail('服务器繁忙，请稍后再试。');
             console.error(err);
           });
         } else {
@@ -84,17 +92,16 @@ export default {
           message: "确定不登录吗？登录后可以得到更优的体验哦，亲。",
         })
         .then(() => {
+          //点击确认按钮
           router.push("/");  //返回到首页
         })
-        .catch(() => {});
+        .catch(() => {});  //点击取消按钮
     }
   },
 };
 </script>
 
 <style lang="less" scoped>
-@import url("//at.alicdn.com/t/font_2210025_e5aasth4egc.css");
-
 .container {
   padding: 20 / 360 * 100vw;
   // background-color: #f2f2f2;
