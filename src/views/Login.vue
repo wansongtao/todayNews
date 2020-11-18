@@ -34,6 +34,7 @@ export default {
     return {
       userName: "",
       userPwd: "",
+      //判断用户是否发送了登录请求
       isLogin: false,
     };
   },
@@ -44,20 +45,37 @@ export default {
   methods: {
     userLogin() {
       if (!this.isLogin) {
-        this.isLogin = true;
         if (this.userName && this.userPwd) {
-          //用户登录
-          console.log(this.userName, this.userPwd);
+          const _this_ = this;
+          _this_.isLogin = true;
+          
+          this.$axios.post(this.$serverUrl + '/login', {
+            username: _this_.userName,
+            password: _this_.userPwd
+          }).then(res => {
+            const data = res.data;
+
+            if(data.statusCode) {
+              _this_.isLogin = false;
+              _this_.$toast.fail(data.message);
+            } else {
+              _this_.$toast.success(data.message);
+              localStorage.setItem('token', data.data.token);
+
+              setTimeout(() => {
+                _this_.isLogin = false;
+                router.push('/');
+              }, 1500);
+            }
+          }).catch(err => {
+            _this_.isLogin = false;
+
+            console.error(err);
+          });
         } else {
           this.$toast.fail("请先输入用户名和密码");
         }
       }
-
-      // axios.get("/user", {
-      //   params: {
-      //     ID: 12345,
-      //   },
-      // });
     },
     closeHandler() {
       //用户点击关闭按钮后返回首页
