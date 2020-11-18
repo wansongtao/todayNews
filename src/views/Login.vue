@@ -95,7 +95,7 @@ export default {
       //用户点击关闭按钮后返回首页
       this.$dialog
         .confirm({
-          message: "确定不登录吗？登录后可以得到更优的体验哦，亲。",
+          message: "确定要离开吗？登录后可以得到更优的体验哦，亲。",
         })
         .then(() => {
           //点击确认按钮
