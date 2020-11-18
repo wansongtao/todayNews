@@ -51,6 +51,12 @@ export default {
           this.$toast.fail("请先输入用户名和密码");
         }
       }
+
+      // axios.get("/user", {
+      //   params: {
+      //     ID: 12345,
+      //   },
+      // });
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="closeBtn">
-      <span class="iconfont iconx"></span>
+      <span class="iconfont iconx" @click="closeHandler"></span>
     </div>
     <div class="logo">
       <span class="iconfont iconnew"></span>
@@ -55,38 +55,52 @@ export default {
       //用户没有发送注册请求
       if (!this.isRegister) {
         if (this.userName && this.nickname && this.userPwd) {
-            const _this_ = this;
-            _this_.isRegister = true;
+          const _this_ = this;
+          _this_.isRegister = true;
 
-            this.$axios.post(this.$serverUrl + '/register', {
-                username: this.userName,
-                password: this.userPwd,
-                nickname: this.nickname
-            }).then(res => {
-                const data = res.data;
-                
-                if(data.statusCode) {
-                    this.$toast.fail(data.message);
-                    _this_.isRegister = false;
-                } else {
-                    this.$toast.success(data.message);
+          this.$axios
+            .post(this.$serverUrl + "/register", {
+              username: this.userName,
+              password: this.userPwd,
+              nickname: this.nickname,
+            })
+            .then((res) => {
+              const data = res.data;
 
-                    //跳转登录页
-                    setTimeout(() => {
-                        _this_.isRegister = false;
-
-                        router.push('/login');
-                    }, 1500);
-                }
-            }).catch(err => {
+              if (data.statusCode) {
+                this.$toast.fail(data.message);
                 _this_.isRegister = false;
-                console.log(err);
+              } else {
+                this.$toast.success(data.message);
+
+                //跳转登录页
+                setTimeout(() => {
+                  _this_.isRegister = false;
+
+                  router.push("/login");
+                }, 1500);
+              }
+            })
+            .catch((err) => {
+              _this_.isRegister = false;
+              console.log(err);
             });
         } else {
           this.$toast.fail("请先输入所有信息！");
         }
       }
     },
+    closeHandler() {
+      //用户点击关闭按钮后返回首页
+      this.$dialog
+        .confirm({
+          message: "确定不注册一个账号吗？注册账号后可以得到更优的体验哦，亲。",
+        })
+        .then(() => {
+          router.push("/");  //返回到首页
+        })
+        .catch(() => {});
+    }
   },
 };
 </script>
