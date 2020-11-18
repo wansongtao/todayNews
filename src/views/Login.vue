@@ -32,6 +32,7 @@ export default {
     return {
       userName: "",
       userPwd: "",
+      isLogin: false,
     };
   },
   components: {
@@ -40,11 +41,14 @@ export default {
   },
   methods: {
     userLogin() {
-      if (this.userName && this.userPwd) {
-        //用户登录
-        console.log(this.userName, this.userPwd);
-      } else {
-          this.$toast.fail('请先输入用户名和密码');
+      if (!this.isLogin) {
+        this.isLogin = true;
+        if (this.userName && this.userPwd) {
+          //用户登录
+          console.log(this.userName, this.userPwd);
+        } else {
+          this.$toast.fail("请先输入用户名和密码");
+        }
       }
     },
   },
