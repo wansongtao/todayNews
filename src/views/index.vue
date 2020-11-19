@@ -33,8 +33,13 @@
       </div>
     </header>
     <main>
-      <template v-for="(item, index) in newList">
-        <article :key="index + 'newlist'">
+      <ul>
+        <li
+          v-for="(item, index) in newList"
+          :key="index + 'newlist'"
+          class="article"
+          @click.self="jumpPage(item.id)"
+        >
           <div class="article_left">
             <p>{{ item.title }}</p>
             <span>评论 {{ item.comment }}</span>
@@ -43,8 +48,8 @@
           <div class="article_right">
             <img :src="item.img | imgUrl" :alt="item.title" />
           </div>
-        </article>
-      </template>
+        </li>
+      </ul>
     </main>
   </div>
 </template>
@@ -64,6 +69,7 @@ export default {
       ],
       newList: [
         {
+          id: 1,
           title: "阿信发文谈与周杰伦合作",
           img:
             "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
@@ -121,17 +127,25 @@ export default {
 
             data.forEach((item) => {
               this.newList.push({
+                id: item.id,
                 title: item.title,
                 img: item.cover[0].url,
                 comment: item.comment_length,
               });
             });
-            
           }
         })
         .catch((err) => {
           console.error(err);
         });
+    },
+    /**
+     * @description 跳转到新闻详情
+     * @param {number} id 新闻id
+     */
+    jumpPage(id) {
+      //跳转并传参
+      this.$router.push({ name: 'NewDetails', params: { id: id }});
     },
   },
   filters: {
@@ -206,7 +220,7 @@ main {
   margin-top: 64 / 360 * 100vw;
   padding: 20 / 360 * 100vw 10 / 360 * 100vw;
 
-  article {
+  .article {
     display: flex;
     padding: 10 / 360 * 100vw 0;
     border-bottom: 1px solid rgb(149, 147, 147);
