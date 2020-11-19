@@ -4,13 +4,18 @@ import router from './router';
 import store from './store';
 
 //导入组件库
-import Vant from 'vant';
-//引入vant组件的css文件
-import 'vant/lib/index.css';
+// import Vant from 'vant';
+// //引入vant组件的css文件
+// import 'vant/lib/index.css';
+
+//按需导入
 //导入toast轻提示框
 import { Toast } from 'vant';
 //导入弹出框
 import { Dialog } from 'vant';
+
+import 'vant/lib/toast/style';
+import 'vant/lib/dialog/style';
 
 //引入axios处理请求
 import axios from 'axios';
@@ -24,7 +29,8 @@ new Vue({
 }).$mount('#app');
 
 //注册vant ui组件库的标签
-Vue.use(Vant);
+// Vue.use(Vant);
+
 //注册toast轻提示框，注册后会自定挂载在vue的原型上，可以通过this.$toast调用
 Vue.use(Toast);
 //全局注册弹出框
