@@ -2,6 +2,7 @@
   <div>
     <!-- 只有输入框失去焦点或用户按下回车且输入的值改变了，才会更新父子组件的value -->
     <input
+      ref='inputdom'
       :type="type"
       :value="value"
       :placeholder="placeholder"
@@ -12,7 +13,9 @@
       v-focus
     />
 
+    <!-- 加上ref后就可以通过this.refs.inputdom获取这个元素 -->
     <input
+      ref='inputdom'
       :type="type"
       :value="value"
       :placeholder="placeholder"
@@ -82,6 +85,12 @@ export default {
     },
   },
   methods: {
+    /**
+     * @description 聚焦到ref的值为'inputdom'的元素上
+     */
+    getFocus() {
+      this.$refs.inputdom.focus();
+    },
     sendValue(event) {
       this.$emit("input", event.target.value);
     },
