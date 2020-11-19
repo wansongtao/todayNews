@@ -22,12 +22,6 @@ import axios from 'axios';
 
 Vue.config.productionTip = false;
 
-new Vue({
-  router,
-  store,
-  render: function (h) { return h(App) }
-}).$mount('#app');
-
 //注册vant ui组件库的标签
 // Vue.use(Vant);
 
@@ -46,3 +40,9 @@ Vue.prototype.$axios = axios;
  * @description 服务器地址
  */
 Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';
+
+new Vue({
+  router,
+  store,
+  render: function (h) { return h(App) }
+}).$mount('#app');

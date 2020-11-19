@@ -29,8 +29,6 @@
 <script>
 import AuthInput from "../components/AuthInput";
 import AuthBtn from "../components/AuthBtn";
-//引入路由，才能使用router.push()跳转页面
-// import router from "../router/index";
 
 export default {
   data() {

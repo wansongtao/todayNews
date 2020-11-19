@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Index from '../views/index.vue'
 import Login from '../views/Login'
 import Register from '../views/Register'
+import NewDetails from '../views/NewDetails'
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register
+  },
+  {
+    path: '/newdetails',
+    name: 'NewDetails',
+    component: NewDetails
   }
 ];
 

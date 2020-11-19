@@ -11,7 +11,7 @@
 
 <style>
 /* @import url('../public/css/base.css'); */
-@import url("//at.alicdn.com/t/font_2210025_e5aasth4egc.css");
+@import url("//at.alicdn.com/t/font_2210025_eeyx4kn1ve.css");
 
 * {
   margin: 0;
@@ -22,7 +22,7 @@ html,body {
   min-width: 320px;
   max-width: 750px;
   margin: 0 auto;
-  font-family: 'kaiti', 'songti', sans-serif;
+  font-family: 'kaiti', 'songti', Arial, Helvetica, sans-serif;
   font-size: 16px;
   line-height: 1.4em;
   background-color: #f2f2f2;
