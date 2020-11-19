@@ -10,7 +10,7 @@
       v-model="userName"
       placeholder="用户名"
       :isfocus="true"
-      pattern="^[a-zA-Z][a-zA-Z0-9]{2,5}$"
+      :pattern="/^[a-zA-Z][a-zA-Z0-9]{2,5}$/"
       msg="请输入3-6位字母/数字组合且以字母开头的用户名"
       @isVerify="isVerify"
     ></auth-input>
@@ -18,7 +18,7 @@
       type="password"
       v-model="userPwd"
       placeholder="密码"
-      pattern="^[a-zA-Z][\w]{5,15}$"
+      :pattern="/^[a-zA-Z][\w]{5,15}$/"
       msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
       @isVerify="isVerify"
     ></auth-input>

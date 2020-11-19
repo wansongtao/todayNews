@@ -39,8 +39,14 @@ export default {
       default: false,
     },
     //必选参数
-    placeholder: String,
-    pattern: String,
+    placeholder: {
+      type: String,
+      required: true
+    },
+    pattern: {
+      type: RegExp,
+      required: true
+    },
     msg: {
       type: String,
       default: "输入有误",
@@ -65,10 +71,7 @@ export default {
     value() {
       //监听用户输入的值是否符合规范
       if (this.value.length != 0) {
-        
-        const regExp = new RegExp(this.pattern);
-
-        if (regExp.test(this.value)) {
+        if (this.pattern.test(this.value)) {
           this.isAdd = false;
         } else {
           this.isAdd = true;
@@ -85,9 +88,7 @@ export default {
     verifyInput(event) {
       //输入框失去焦点后验证用户输入
       if (this.value.length != 0) {
-        const regExp = new RegExp(this.pattern);
-
-        if (!regExp.test(this.value)) {
+        if (!this.pattern.test(this.value)) {
           //用户输入不符合规格
           this.isAdd = true;
           this.$toast.fail(this.msg);
