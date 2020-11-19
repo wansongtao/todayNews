@@ -1,5 +1,5 @@
 <template>
-  <div class="btn" @click="clickHandler">
+  <div class="btn">
       {{text}}
   </div>
 </template>
@@ -10,11 +10,6 @@ export default {
         text: {
             type: String,
             default: '登录'
-        }
-    },
-    methods: {
-        clickHandler(event) {
-            this.$emit('click', event);
         }
     }
 }

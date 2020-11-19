@@ -85,12 +85,6 @@ export default {
     },
   },
   methods: {
-    /**
-     * @description 聚焦到ref的值为'inputdom'的元素上
-     */
-    getFocus() {
-      this.$refs.inputdom.focus();
-    },
     sendValue(event) {
       this.$emit("input", event.target.value);
     },
@@ -104,16 +98,8 @@ export default {
 
           //选中错误文本
           event.target.select();
-
-          //用户输入不符合规范，发送一个false值给父组件
-          this.$emit('isVerify', false);
-          // setTimeout(() => {
-          //   document.getElementById('myinput').focus();
-          // }, 1600);
-        }else {
-          //通过了验证，将验证结果发送给父组件
-          this.$emit('isVerify', true);
         }
+        
       }
     },
     

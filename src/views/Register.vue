@@ -7,29 +7,29 @@
       <span class="iconfont iconnew"></span>
     </div>
     <auth-input
+      ref="userName"
       v-model="userName"
       placeholder="用户名"
       :isfocus="true"
-      :pattern="/^[a-zA-Z][a-zA-Z0-9]{2,5}$/"
+      :pattern="rules.userName"
       msg="请输入3-6位字母/数字组合且以字母开头的用户名"
-      @isVerify="isVerify"
     ></auth-input>
     <auth-input
-      v-model="nickname"
+      ref="nickName"
+      v-model="nickName"
       placeholder="昵称"
-      :pattern="/^[\u4e00-\u9fa5]{2,7}$/"
+      :pattern="rules.nickName"
       msg="请输入2-7位中文昵称"
-      @isVerify="isVerify"
     ></auth-input>
     <auth-input
+      ref="userPwd"
       type="password"
       v-model="userPwd"
       placeholder="密码"
-      :pattern="/^[a-zA-Z][\w]{5,15}$/"
+      :pattern="rules.userPwd"
       msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
-      @isVerify="isVerify"
     ></auth-input>
-    <auth-btn text="注册" @click="userRegister"></auth-btn>
+    <auth-btn text="注册" @click.native="userRegister"></auth-btn>
   </div>
 </template>
 
@@ -37,14 +37,19 @@
 import AuthInput from "../components/AuthInput";
 import AuthBtn from "../components/AuthBtn";
 //引入路由，才能使用router.push()跳转页面
-import router from "../router/index";
+// import router from "../router/index";
 
 export default {
   data() {
     return {
       userName: "",
-      nickname: "",
+      nickName: "",
       userPwd: "",
+      rules: {
+        userName: /^[a-zA-Z][a-zA-Z0-9]{2,5}$/,
+        nickName: /^[\u4e00-\u9fa5]{2,7}$/,
+        userPwd: /^[a-zA-Z][\w]{5,15}$/
+      },
       /**
        * @description 记录用户是否发送了注册请求，true发送了
        */
@@ -59,7 +64,16 @@ export default {
     userRegister() {
       //用户没有发送注册请求
       if (!this.isRegister) {
-        if (this.userName && this.nickname && this.userPwd) {
+        if (this.userName && this.nickName && this.userPwd) {
+          for(let key in this.rules) {
+            //验证用户输入是否合法
+            if(!this.rules[key].test(this[key])) {
+              this.$toast.fail('请输入正确的信息');
+
+              return false;
+            }
+          }
+
           const _this_ = this;
           _this_.isRegister = true;
 
@@ -68,7 +82,7 @@ export default {
             .post(this.$serverUrl + "/register", {
               username: this.userName,
               password: this.userPwd,
-              nickname: this.nickname,
+              nickname: this.nickName,
             })
             .then((res) => {
               const data = res.data;
@@ -85,7 +99,7 @@ export default {
                 setTimeout(() => {
                   _this_.isRegister = false;
 
-                  router.push("/login");
+                  _this_.$router.push("/login");
                 }, 1500);
               }
             })
@@ -96,6 +110,17 @@ export default {
             });
         } else {
           this.$toast.fail("请先输入所有信息！");
+
+          //聚焦到用户没有输入信息的输入框
+          setTimeout(() => {
+            if(this.userName.length === 0) {
+              this.$refs.userName.$refs.inputdom.focus();
+            } else if(this.nickName.length === 0) {
+              this.$refs.nickName.$refs.inputdom.focus();
+            } else {
+              this.$refs.userPwd.$refs.inputdom.focus();
+            }
+          }, 1500);
         }
       }
     },
@@ -107,16 +132,12 @@ export default {
         })
         .then(() => {
           //用户点击确认按钮
-          router.push("/"); //返回到首页
+          this.$router.push("/"); //返回到首页
         })
-        .catch(() => {}); //用户点击取消按钮
-    },
-    /**
-     * @description 自定义事件，当用户输入不合法时不发送请求
-     * @param {Boolean} isValidate 子组件传过来的值，合法true
-     */
-    isVerify(isValidate) {
-      this.isRegister = !isValidate;
+        .catch(() => {
+          //用户点击取消按钮，聚焦到用户名输入框
+          this.$refs.userName.$refs.inputdom.focus();
+        }); 
     },
   },
 };

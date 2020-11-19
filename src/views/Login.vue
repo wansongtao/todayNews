@@ -7,22 +7,22 @@
       <span class="iconfont iconnew"></span>
     </div>
     <auth-input
+      ref="username"
       v-model="userName"
       placeholder="用户名"
       :isfocus="true"
-      :pattern="/^[a-zA-Z][a-zA-Z0-9]{2,5}$/"
+      :pattern="rules.userName"
       msg="请输入3-6位字母/数字组合且以字母开头的用户名"
-      @isVerify="isVerify"
     ></auth-input>
     <auth-input
+      ref="userpwd"
       type="password"
       v-model="userPwd"
       placeholder="密码"
-      :pattern="/^[a-zA-Z][\w]{5,15}$/"
+      :pattern="rules.userPwd"
       msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
-      @isVerify="isVerify"
     ></auth-input>
-    <auth-btn @click="userLogin"></auth-btn>
+    <auth-btn @click.native="userLogin"></auth-btn>
   </div>
 </template>
 
@@ -30,21 +30,21 @@
 import AuthInput from "../components/AuthInput";
 import AuthBtn from "../components/AuthBtn";
 //引入路由，才能使用router.push()跳转页面
-import router from "../router/index";
+// import router from "../router/index";
 
 export default {
   data() {
     return {
       userName: "",
       userPwd: "",
+      rules: {
+        userName: /^[a-zA-Z][a-zA-Z0-9]{2,5}$/,
+        userPwd: /^[a-zA-Z][\w]{5,15}$/
+      },
       /**
        * @description 记录用户是否发送了登录请求，true发送了
        */
       isLogin: false,
-      // /**
-      //  * @description 
-      //  */
-      // isValidate: false
     };
   },
   components: {
@@ -56,6 +56,16 @@ export default {
       //判断用户是否已经发送了登录请求，发送了则不重复发送
       if (!this.isLogin) {
         if (this.userName && this.userPwd) {
+          
+          for(let item in this.rules) {
+            //验证用户输入是否合法，this[item](item = userName) => this.userName
+            if(!this.rules[item].test(this[item])) {
+              this.$toast.fail('请先输入正确的用户名和密码');
+
+              return false;
+            }
+          }
+
           const _this_ = this;
           _this_.isLogin = true;
           
@@ -78,7 +88,7 @@ export default {
               //1.5s后跳转到首页
               setTimeout(() => {
                 _this_.isLogin = false;
-                router.push('/');
+                _this_.$router.push('/');
               }, 1500);
             }
           }).catch(err => {
@@ -87,7 +97,16 @@ export default {
             console.error(err);
           });
         } else {
-          this.$toast.fail("请先输入用户名和密码");
+          this.$toast.fail("请输入所有信息");
+
+          setTimeout(() => {
+            //聚焦到用户没有输值的input框
+            if(this.userName.length === 0) {
+              this.$refs.username.$refs.inputdom.focus();
+            } else {
+              this.$refs.userpwd.$refs.inputdom.focus();
+            }
+          }, 1500);
         }
       }
     },
@@ -99,16 +118,12 @@ export default {
         })
         .then(() => {
           //点击确认按钮
-          router.push("/");  //返回到首页
+          this.$router.push("/");  //返回到首页
         })
-        .catch(() => {});  //点击取消按钮
-    },
-    /**
-     * @description 自定义事件，当用户输入不合法时不发送请求
-     * @param {Boolean} isValidate 子组件传过来的值，合法true
-     */
-    isVerify(isValidate) {
-      this.isLogin = !isValidate;
+        .catch(() => {
+          //点击取消按钮，后聚焦到用户名输入框
+          this.$refs.username.$refs.inputdom.focus();
+        });
     }
   },
 };
