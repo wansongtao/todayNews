@@ -3,7 +3,7 @@
       <h1>我的第一个vue.cli项目</h1>
       <p>不过是大梦一场空</p>
       <p>不过是孤影照惊鸿</p>
-      <my-input v-model="value" :placeholder="placeholder"></my-input>
+      <!-- <my-input v-model="value" :placeholder="placeholder"></my-input> -->
       <!-- <van-button type="primary">主要按钮</van-button> -->
   </div>
 </template>
@@ -11,7 +11,6 @@
 <script>
 //引入组件
 import AuthInput from '../components/AuthInput.vue';
-import {Button} from 'vant';
 
 export default {
     data() {
@@ -22,8 +21,7 @@ export default {
     },
     //注册组件
     components: {
-        'my-input': AuthInput,
-        [Button.name]: Button
+        'my-input': AuthInput
     },
     updated() {
         console.log(this.value);
