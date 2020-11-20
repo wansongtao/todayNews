@@ -69,7 +69,7 @@ axios.interceptors.response.use(res => {
 router.beforeEach((to, from, next) => {
   const hasToken = localStorage.token;
 
-  if (to.path === '/personal') {
+  if (to.path.indexOf('/personal') != -1) {
     if (hasToken) {
       next();
     } else {
