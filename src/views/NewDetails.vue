@@ -3,8 +3,10 @@
     <!-- 头部返回和关注按钮 -->
     <header>
       <div class="logo_btn">
-        <i class="iconfont icondayu"></i>
-        <span class="iconfont iconnew"></span>
+        <router-link to="/">
+          <i class="iconfont icondayu"></i>
+          <span class="iconfont iconnew"></span>
+        </router-link>
       </div>
       <div class="follow_btn">关注</div>
     </header>
@@ -14,10 +16,10 @@
         <h4>车主注意啦！9月下旬部分临时泊位进行清洁保养</h4>
         <p>火星时报<span>2019-10-10</span></p>
         <p class="content">
-        为营造临时泊位“干静、整洁、平安、有序”面貌迎国庆，市交通部
-        门拟在9月下旬对部分城市道路临时泊位进行清洁保养，请市民群
-        众配合在清洁保养期间将车辆驶离泊位。第一阶段临时泊位清洁
-        保养计划（涉及17条路段）。
+          为营造临时泊位“干静、整洁、平安、有序”面貌迎国庆，市交通部
+          门拟在9月下旬对部分城市道路临时泊位进行清洁保养，请市民群
+          众配合在清洁保养期间将车辆驶离泊位。第一阶段临时泊位清洁
+          保养计划（涉及17条路段）。
         </p>
       </article>
       <div class="article_btn">
@@ -28,25 +30,32 @@
 
     <!-- 评论 -->
     <footer>
-      <h4>精彩跟帖</h4>
-      <div class="comment_list">
-        <div class="comment_listtop">
-          <img src="../assets/user.jpg" alt="头像">
-          <div>
-            <span class="username">浮生若梦</span><br>
-            <span class="date">2020-11-20</span>
+      <div class="comment_demo">
+        <h4>精彩跟帖</h4>
+        <div class="comment_list">
+          <div class="comment_listtop">
+            <img src="../assets/user.jpg" alt="头像" />
+            <div>
+              <span class="username">浮生若梦</span><br />
+              <span class="date">2020-11-20</span>
+            </div>
+            <span> 回复 </span>
           </div>
-          <span>
-            回复
-          </span>
-        </div>
-        <div class="comment_list_content">
-          <p>不过是大梦一场空</p>
+          <div class="comment_list_content">
+            <p>不过是大梦一场空</p>
+          </div>
         </div>
       </div>
       <!-- <div class="space">
         暂无跟帖,抢占沙发
       </div> -->
+
+      <div class="writeComment">
+        <div class="inputBtn">写跟帖</div>
+        <span class="iconfont iconxinxi"><span class="message">102</span></span>
+        <span class="iconfont iconshoucang"></span>
+        <span class="iconfont iconfenxiang"></span>
+      </div>
     </footer>
   </div>
 </template>
@@ -67,9 +76,9 @@ export default {
 
 <style lang="less" scoped>
 header {
-  position: fixed;
-  top: 0;
-  left: 0;
+  // position: fixed;
+  // top: 0;
+  // left: 0;
   display: flex;
   width: 100% - (20 / 360 * 100vw);
   padding: 10 / 360 * 100vw;
@@ -105,7 +114,7 @@ header {
 }
 
 main {
-  margin-top: 50 / 360 * 100vw;
+  // margin-top: 10 / 360 * 100vw;
   padding: 10 / 360 * 100vw;
   h4 {
     // text-align: center;
@@ -120,9 +129,11 @@ main {
     }
   }
   .content {
-      margin: 20 / 360 * 100vw 0;
-      text-indent: 2em;
-      color: #000;
+    margin: 20 / 360 * 100vw 0;
+    text-indent: 2em;
+    color: #000;
+    font-size: 14 / 360 * 100vw;
+    line-height: 20 / 360 * 100vw;
   }
 
   .article_btn {
@@ -205,5 +216,50 @@ footer {
     color: rgb(155, 149, 149);
     border-bottom: 1px solid rgb(190, 186, 186);
   }
+
+  .writeComment {
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    width: 100% - 20 / 360 * 100vw;
+    padding: 10 / 360 * 100vw;
+    align-items: center;
+    justify-content: space-between;
+    background: rgb(165, 161, 161);
+
+    div {
+      flex: 1;
+      padding: 0 15 / 360 * 100vw;
+      height: 30 / 360 * 100vw;
+      font-size: 12 / 360 * 100vw;
+      line-height: 30 / 360 * 100vw;
+      color: rgb(128, 121, 121);
+      background: #d7d7d7;
+      border-radius: 15 / 360 * 100vw;
+    }
+
+    span {
+      position: relative;
+      padding: 0 10 / 360 * 100vw;
+      font-size: 16 / 360 * 100vw;
+
+      .message {
+        position: absolute;
+        display: block;
+        top: -8 / 360 * 100vw;
+        left: 15 / 360 * 100vw;
+        padding: 0 5 / 360 * 100vw;
+        font-size: 10 / 360 * 100vw;
+        line-height: 14 / 360 * 100vw;
+        background: red;
+        color: #fff;
+        border-radius: 7 / 360 * 100vw;
+      }
+    }
+  }
+}
+
+.comment_demo {
+  margin-bottom: 100 / 360 * 100vw;
 }
 </style>
