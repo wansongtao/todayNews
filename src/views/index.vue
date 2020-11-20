@@ -78,10 +78,10 @@ export default {
       ],
     };
   },
-  created() {
+  mounted() {
     //获取栏目列表数据
     this.$axios
-      .get(this.$serverUrl + "/category")
+      .get("/category")
       .then((res) => {
         let categoryName = new Set(),
           categoryArr = [];
@@ -112,7 +112,7 @@ export default {
       this.liIndex = index;
 
       this.$axios
-        .get(this.$serverUrl + "/post", {
+        .get("/post", {
           params: {
             category: id,
           },
@@ -148,18 +148,18 @@ export default {
       this.$router.push({ name: 'NewDetails', params: { id: id }});
     },
   },
-  filters: {
-    /**
-     * @description 给图片路径加上服务器地址
-     */
-    imgUrl(value) {
-      if (value.indexOf("http") == -1 && value.indexOf("https") == -1) {
-        return "http://157.122.54.189:9083" + value;
-      } else {
-        return value;
-      }
-    },
-  },
+  // filters: {
+  //   /**
+  //    * @description 给图片路径加上服务器地址
+  //    */
+  //   imgUrl(value) {
+  //     if (value.indexOf("http") == -1 && value.indexOf("https") == -1) {
+  //       return "http://157.122.54.189:9083" + value;
+  //     } else {
+  //       return value;
+  //     }
+  //   },
+  // },
 };
 </script>
 

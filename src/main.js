@@ -36,10 +36,12 @@ Toast.setDefaultOptions({ duration: 1500 });
 //挂到原型上
 Vue.prototype.$axios = axios;
 
+axios.defaults.baseURL = 'http://157.122.54.189:9083';
+
 /**
  * @description 服务器地址
  */
-Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';
+// Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';
 
 new Vue({
   router,

@@ -79,7 +79,7 @@ export default {
 
           //发送注册请求
           this.$axios
-            .post(this.$serverUrl + "/register", {
+            .post("/register", {
               username: this.userName,
               password: this.userPwd,
               nickname: this.nickName,

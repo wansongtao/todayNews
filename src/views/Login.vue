@@ -68,7 +68,7 @@ export default {
           _this_.isLogin = true;
           
           //发送请求
-          this.$axios.post(this.$serverUrl + '/login', {
+          this.$axios.post('/login', {
             username: _this_.userName,
             password: _this_.userPwd
           }).then(res => {
