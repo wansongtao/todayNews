@@ -39,6 +39,8 @@ Vue.prototype.$axios = axios;
 //设置服务器默认路径
 axios.defaults.baseURL = 'http://157.122.54.189:9083';
 
+sessionStorage.baseURL = 'http://157.122.54.189:9083';
+
 //axios拦截器
 axios.interceptors.response.use(res => {
   const {message, statusCode} = res.data;
