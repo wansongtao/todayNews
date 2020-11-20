@@ -1,5 +1,6 @@
 <template>
-  <div class="index-container" @click.capture="'capture';">
+<!-- @click.capture="'capture';" -->
+  <div class="index-container">
     <header>
       <!-- 顶部工具栏 -->
       <div class="top_bar">
