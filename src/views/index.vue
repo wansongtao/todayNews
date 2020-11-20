@@ -5,7 +5,10 @@
       <div class="top_bar">
         <!-- 用户按钮 -->
         <div class="top_bar_l">
-          <a href="javascript:;"><span class="iconfont iconyonghu"></span></a>
+          <!-- <a href="javascript:;"></a> -->
+          <router-link to="/personal">
+            <span class="iconfont iconyonghu"></span>
+          </router-link>
         </div>
         <!-- logo -->
         <div class="top_bar_m">
@@ -13,7 +16,9 @@
         </div>
         <!-- 搜索按钮 -->
         <div class="top_bar_r">
-          <a href="javascript:;"><span class="iconfont iconsousuo"></span></a>
+          <router-link to="/search">
+            <span class="iconfont iconsousuo"></span>
+          </router-link>
         </div>
       </div>
       <!-- 热门栏目 -->
