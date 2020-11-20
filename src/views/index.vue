@@ -38,7 +38,7 @@
           v-for="(item, index) in newList"
           :key="index + 'newlist'"
           class="article"
-          @click.self="jumpPage(item.id)"
+          @click="jumpPage(item.id)"
         >
           <div class="article_left">
             <p>{{ item.title }}</p>
@@ -78,7 +78,7 @@ export default {
       ],
     };
   },
-  mounted() {
+  created() {
     //获取栏目列表数据
     this.$axios
       .get("/category")
@@ -158,6 +158,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// /deep/ img {
+//   max-width: 100%;
+// }
+
 header {
   position: fixed;
   top: 0;
