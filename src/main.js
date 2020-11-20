@@ -55,8 +55,8 @@ axios.interceptors.response.use(res => {
   } = res.data;
   let codeRegExp = /^[45]\d{2}$/;
 
-  if (message === "用户信息验证失败") {
-    router.push('/login');
+  if (message == "用户信息验证失败!") {
+    router.replace('/login');
   } else if (message && codeRegExp.test(statusCode)) {
     Toast.fail(message);
   }
@@ -67,10 +67,10 @@ axios.interceptors.response.use(res => {
 
 //路由守卫，to要跳转到的页面，from当前页面
 router.beforeEach((to, from, next) => {
-  const hasToken = localStorage.token;
+  const hasToken = localStorage.token, userId = localStorage.userId;
 
   if (to.path.indexOf('/personal') != -1) {
-    if (hasToken) {
+    if (hasToken && userId) {
       next();
     } else {
       router.push('/login').catch(err => {});

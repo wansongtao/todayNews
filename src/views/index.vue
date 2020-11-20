@@ -153,7 +153,7 @@ export default {
      */
     imgUrl(value) {
       
-      if (value.indexOf("http") == -1 && value.indexOf("https") == -1) {
+      if (value.indexOf("http") == -1) {
         return sessionStorage.baseURL + value;
       } else {
         return value;
