@@ -11,7 +11,7 @@
 
 <style>
 /* @import url('../public/css/base.css'); */
-@import url("//at.alicdn.com/t/font_2210025_sqdi8yzicnj.css");
+@import url("//at.alicdn.com/t/font_2210025_oy0iqql1dy.css");
 
 * {
   margin: 0;
