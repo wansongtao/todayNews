@@ -55,6 +55,23 @@ axios.interceptors.response.use(res => {
   return res;
 });
 
+//路由守卫，to要跳转到的页面，from当前页面
+router.beforeEach((to, from, next) => {
+  const hasToken = localStorage.token;
+
+  if(to.path === '/personal') {
+    if(hasToken) {
+      return next();
+    }
+    else {
+      router.push('/login');
+    }
+  }
+
+  //必须调用，否则不能跳转到下一个页面
+  next();
+});
+
 // /**
 //  * @description 服务器地址
 //  */
