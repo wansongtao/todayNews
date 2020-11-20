@@ -73,7 +73,7 @@ router.beforeEach((to, from, next) => {
     if (hasToken) {
       next();
     } else {
-      router.push('/login');
+      router.push('/login').catch(err => {});
     }
   } else {
     //必须调用，否则不能跳转到下一个页面
