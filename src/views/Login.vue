@@ -82,7 +82,8 @@ export default {
               //登录成功
               _this_.$toast.success(data.message);
               localStorage.setItem('token', data.data.token);
-
+              localStorage.userId = data.data.user.id;
+              
               //1.5s后跳转到首页
               setTimeout(() => {
                 _this_.isLogin = false;
