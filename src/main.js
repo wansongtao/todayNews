@@ -10,9 +10,13 @@ import store from './store';
 
 //按需导入
 //导入toast轻提示框
-import { Toast } from 'vant';
+import {
+  Toast
+} from 'vant';
 //导入弹出框
-import { Dialog } from 'vant';
+import {
+  Dialog
+} from 'vant';
 
 import 'vant/lib/toast/style';
 import 'vant/lib/dialog/style';
@@ -31,7 +35,9 @@ Vue.use(Toast);
 Vue.use(Dialog);
 
 // 将所有 Toast 的展示时长设置为 1500 毫秒
-Toast.setDefaultOptions({ duration: 1500 });
+Toast.setDefaultOptions({
+  duration: 1500
+});
 
 //挂到原型上
 Vue.prototype.$axios = axios;
@@ -43,13 +49,15 @@ sessionStorage.baseURL = 'http://157.122.54.189:9083';
 
 //axios拦截器
 axios.interceptors.response.use(res => {
-  const {message, statusCode} = res.data;
+  const {
+    message,
+    statusCode
+  } = res.data;
   let codeRegExp = /^[45]\d{2}$/;
 
-  if(message === "用户信息验证失败") {
+  if (message === "用户信息验证失败") {
     router.push('/login');
-  }
-  else if(message && codeRegExp.test(statusCode)) {
+  } else if (message && codeRegExp.test(statusCode)) {
     Toast.fail(message);
   }
 
@@ -61,17 +69,16 @@ axios.interceptors.response.use(res => {
 router.beforeEach((to, from, next) => {
   const hasToken = localStorage.token;
 
-  if(to.path === '/personal') {
-    if(hasToken) {
-      return next();
-    }
-    else {
+  if (to.path === '/personal') {
+    if (hasToken) {
+      next();
+    } else {
       router.push('/login');
     }
+  } else {
+    //必须调用，否则不能跳转到下一个页面
+    next();
   }
-
-  //必须调用，否则不能跳转到下一个页面
-  next();
 });
 
 // /**
@@ -82,5 +89,7 @@ router.beforeEach((to, from, next) => {
 new Vue({
   router,
   store,
-  render: function (h) { return h(App) }
+  render: function (h) {
+    return h(App)
+  }
 }).$mount('#app');
