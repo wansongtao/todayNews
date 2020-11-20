@@ -36,11 +36,28 @@ Toast.setDefaultOptions({ duration: 1500 });
 //挂到原型上
 Vue.prototype.$axios = axios;
 
+//设置服务器默认路径
 axios.defaults.baseURL = 'http://157.122.54.189:9083';
 
-/**
- * @description 服务器地址
- */
+//axios拦截器
+axios.interceptors.response.use(res => {
+  const {message, statusCode} = res.data;
+  let codeRegExp = /^[45]\d{2}$/;
+
+  if(message === "用户信息验证失败") {
+    router.push('/login');
+  }
+  else if(message && codeRegExp.test(statusCode)) {
+    Toast.fail(message);
+  }
+
+  //必须要返回值，要不然其他axios请求获取不到值
+  return res;
+});
+
+// /**
+//  * @description 服务器地址
+//  */
 // Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';
 
 new Vue({

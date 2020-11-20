@@ -46,7 +46,7 @@
           </div>
 
           <div class="article_right">
-            <img :src="item.img | imgUrl" :alt="item.title" />
+            <img :src="item.img" :alt="item.title" />
           </div>
         </li>
       </ul>
@@ -85,7 +85,7 @@ export default {
       .then((res) => {
         let categoryName = new Set(),
           categoryArr = [];
-
+        
         //去重
         res.data.data.forEach((element) => {
           if (!categoryName.has(element.name)) {
@@ -96,10 +96,6 @@ export default {
 
         this.category = categoryArr.slice(0, 6);
         this.getNewsList(this.category[0].id, 0);
-      })
-      .catch((err) => {
-        this.$toast.fail("服务器繁忙，请稍后再试。");
-        console.error(err);
       });
   },
   methods: {
@@ -134,9 +130,6 @@ export default {
               });
             });
           }
-        })
-        .catch((err) => {
-          console.error(err);
         });
     },
     /**
