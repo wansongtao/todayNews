@@ -5,7 +5,11 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 import NewDetails from '../views/NewDetails';
 import Personal from '../views/Personal';
-import Search from '../views/Search.vue';
+import Search from '../views/Search';
+import userEdit from '../views/userEdit';
+import collect from '../views/collect';
+import commentList from '../views/commentList';
+import attention from '../views/attention';
 
 Vue.use(VueRouter);
 
@@ -34,6 +38,26 @@ const routes = [
     path: '/personal',
     name: 'Personal',
     component: Personal
+  },
+  {
+    path: '/personal/useredit',
+    name: 'Edit',
+    component: userEdit
+  },
+  {
+    path: '/personal/collect',
+    name: 'Collect',
+    component: collect
+  },
+  {
+    path: '/personal/commentlist',
+    name: 'Commentlist',
+    component: commentList
+  },
+  {
+    path: '/personal/attention',
+    name: 'Attention',
+    component: attention
   },
   {
     path: '/search',
