@@ -55,6 +55,7 @@
       show-cancel-button
       @confirm="updatemsg"
       @cancel="updateText = ''"
+      :before-close="beforeClose"
     >
       <div class="updatemsg">
         <auth-input
@@ -175,12 +176,7 @@ export default {
             }
           });
       }
-      // else {
-      //   setTimeout(() => {
-      //     this.show = true;
-      //     this.$toast.fail(this.msg);
-      //   }, 0);
-      // }
+      
     },
     updateSex(action, index) {
       this.$axios.post('/user_update/' + localStorage.userId, {
@@ -190,6 +186,18 @@ export default {
         this.$toast.success("修改成功");
         this.gender = res.data.data.gender;
       });
+    },
+    beforeClose(action, done) {
+      if(action == 'confirm') {
+        if(!this.rules.test(this.updateText)) {
+          this.$toast.fail(this.msg);
+          done(false);
+        } else {
+          done();
+        }
+      } else {
+        done();
+      }
     }
   },
 };
