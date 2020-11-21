@@ -1,19 +1,15 @@
 <template>
-  <router-link :to="url || '/'">
-        <div class="destext">{{listtext}}</div>
+    <div class="list_container">
+      <div class="destext">{{listtext}}</div>
         <div class="detailinfo">
           {{detailtext}}<i class="iconfont iconright"></i>
         </div>
-    </router-link>
+    </div>
 </template>
 
 <script>
 export default {
     props: {
-        url: {
-            type: String,
-            required: true
-        },
         listtext: {
             type: String,
             required: true
@@ -27,7 +23,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-a {
+.list_container {
   display: flex;
   align-items: center;
   justify-content: space-between;
