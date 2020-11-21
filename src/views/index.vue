@@ -123,7 +123,8 @@ export default {
           let data = res.data.data;
 
           if (data.length === 0) {
-            this.$toast.fail("该栏目不存在");
+            this.$toast.fail("您没有关注任何新闻");
+            this.newList = [];
           } else {
             this.newList = [];
 
