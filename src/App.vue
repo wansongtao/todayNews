@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @click.capture="'capture';">
+  <div id="app" @click.capture="captureHandler">
     
     <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
@@ -8,6 +8,16 @@
     <router-view/>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    captureHandler() {
+      console.log('capture');
+    }
+  }
+}
+</script>
 
 <style>
 /* @import url('../public/css/base.css'); */
