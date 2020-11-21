@@ -67,11 +67,13 @@ export default {
   created() {
     this.$axios.get("/user/" + localStorage.userId).then((res) => {
       const { gender, head_img, nickname, username } = res.data.data;
-      // console.log(res.data.data)
+      
       this.gender = gender;
       if (head_img) {
         if (head_img.indexOf("http") == -1) {
           this.head_img = sessionStorage.baseURL + head_img;
+        } else {
+          this.head_img = head_img;
         }
       }
       this.nickname = nickname || username;

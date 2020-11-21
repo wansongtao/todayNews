@@ -20,26 +20,68 @@
       </div>
     </div>
     <div class="edit_list">
-      <personal-list listtext="昵称" :detailtext="nickname"></personal-list>
-      <personal-list listtext="密码" detailtext="******"></personal-list>
-      <personal-list listtext="性别" :detailtext="gender === 1 ? '男' : '女'"></personal-list>
+      <personal-list
+        listtext="昵称"
+        :detailtext="nickname"
+        @click.native="
+          showDialog('昵称', /^[\u4e00-\u9fa5]{2,7}$/, '请输入2-7位中文昵称')
+        "
+      ></personal-list>
+      
+      <personal-list
+        listtext="密码"
+        detailtext="******"
+        @click.native="
+          showDialog('密码', /^[a-zA-Z][\w]{5,15}$/, '请输入6-16位字母、数字、下划线组合且以字母开头的密码', 'password')
+        "
+      ></personal-list>
+      <!-- 弹出框修改昵称和密码 -->
+      <van-dialog
+        v-model="show"
+        :title="'修改' + title"
+        show-cancel-button
+        @confirm="updatemsg"
+        @cancel="updateText = '';"
+      >
+        <div class="updatemsg">
+          <auth-input
+            :type="type"
+            v-model="updateText"
+            :placeholder="title"
+            :pattern="rules"
+            :msg="msg"
+          ></auth-input>
+        </div>
+      </van-dialog>
+
+      <personal-list
+        listtext="性别"
+        :detailtext="gender === 1 ? '男' : '女'"
+      ></personal-list>
     </div>
   </div>
 </template>
 
 <script>
 import personalList from "../components/personalList";
-
+import AuthInput from "../components/AuthInput";
 export default {
   data() {
     return {
       head_img: "",
       gender: 1,
-      nickname: '浮生若梦'
+      nickname: "浮生若梦",
+      show: false,
+      updateText: "",
+      rules: "",
+      title: "",
+      msg: "",
+      type: ""
     };
   },
   components: {
     "personal-list": personalList,
+    "auth-input": AuthInput,
   },
   created() {
     this.$axios.get("/user/" + localStorage.userId).then((res) => {
@@ -49,6 +91,8 @@ export default {
       if (head_img) {
         if (head_img.indexOf("http") == -1) {
           this.head_img = sessionStorage.baseURL + head_img;
+        } else {
+          this.head_img = head_img;
         }
       }
       this.nickname = nickname;
@@ -72,9 +116,42 @@ export default {
             head_img: this.head_img,
           })
           .then((res) => {
-            this.$toast.success('修改成功');
+            this.$toast.success("修改成功");
           });
       });
+    },
+    /**
+     * @description 显示弹出框
+     */
+    showDialog(text, rule, msg, type = 'text') {
+      this.title = text;
+      this.rules = rule;
+      this.msg = msg;
+      this.type = type;
+      this.show = true;
+    },
+    /**
+     * @description 点击确认按钮后，修改用户信息
+     */
+    updatemsg() {
+      if(this.rules.test(this.updateText)){
+        let data = {};
+        if(this.type == 'password') {
+          data = {password: this.updateText};
+        }else {
+          data = {nickname: this.updateText};
+        }
+
+        this.$axios
+          .post("/user_update/" + localStorage.userId, data)
+          .then((res) => {
+            this.$toast.success("修改成功");
+
+            if(this.type != 'password') {
+              this.nickname = this.updateText;
+            }
+          });
+      }
     },
   },
 };
@@ -126,5 +203,10 @@ h4 {
       opacity: 0.5;
     }
   }
+}
+
+.updatemsg {
+  width: 80%;
+  margin: 10 / 360 * 100vw auto;
 }
 </style>
