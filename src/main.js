@@ -47,7 +47,16 @@ axios.defaults.baseURL = 'http://157.122.54.189:9083';
 
 sessionStorage.baseURL = 'http://157.122.54.189:9083';
 
-//axios拦截器
+//axios请求拦截器，统一添加token
+axios.interceptors.request.use(config => {
+  if (!config.headers.Authorization && localStorage.token) {
+    config.headers.Authorization = localStorage.token;
+  }
+
+  return config;
+});
+
+//axios接收拦截器
 axios.interceptors.response.use(res => {
   const {
     message,
