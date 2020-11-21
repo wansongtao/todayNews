@@ -6,7 +6,7 @@ import store from './store';
 //导入组件库
 // import Vant from 'vant';
 // //引入vant组件的css文件
-// import 'vant/lib/index.css';
+import 'vant/lib/index.css';
 
 //按需导入
 //导入toast轻提示框
@@ -23,11 +23,10 @@ import { Uploader } from 'vant';
 import { ActionSheet } from 'vant';
 
 
-
-import 'vant/lib/toast/style';
-import 'vant/lib/dialog/style';
-import 'vant/lib/uploader/style';
-import 'vant/lib/actionsheet/style';
+// import 'vant/lib/toast/style';
+// import 'vant/lib/dialog/style';
+// import 'vant/lib/uploader/style';
+// import 'vant/lib/actionsheet/style';
 
 //引入axios处理请求
 import axios from 'axios';

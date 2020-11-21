@@ -27,38 +27,55 @@
           showDialog('昵称', /^[\u4e00-\u9fa5]{2,7}$/, '请输入2-7位中文昵称')
         "
       ></personal-list>
-      
+
       <personal-list
         listtext="密码"
         detailtext="******"
         @click.native="
-          showDialog('密码', /^[a-zA-Z][\w]{5,15}$/, '请输入6-16位字母、数字、下划线组合且以字母开头的密码', 'password')
+          showDialog(
+            '密码',
+            /^[a-zA-Z][\w]{5,15}$/,
+            '请输入6-16位字母、数字、下划线组合且以字母开头的密码',
+            'password'
+          )
         "
       ></personal-list>
-      <!-- 弹出框修改昵称和密码 -->
-      <van-dialog
-        v-model="show"
-        :title="'修改' + title"
-        show-cancel-button
-        @confirm="updatemsg"
-        @cancel="updateText = '';"
-      >
-        <div class="updatemsg">
-          <auth-input
-            :type="type"
-            v-model="updateText"
-            :placeholder="title"
-            :pattern="rules"
-            :msg="msg"
-          ></auth-input>
-        </div>
-      </van-dialog>
 
       <personal-list
         listtext="性别"
         :detailtext="gender === 1 ? '男' : '女'"
+        @click.native="sexShow = true"
       ></personal-list>
     </div>
+
+    <!-- 弹出框修改昵称和密码 -->
+    <van-dialog
+      v-model="show"
+      :title="'修改' + title"
+      show-cancel-button
+      @confirm="updatemsg"
+      @cancel="updateText = ''"
+    >
+      <div class="updatemsg">
+        <auth-input
+          :type="type"
+          v-model="updateText"
+          :placeholder="title"
+          :pattern="rules"
+          :msg="msg"
+        ></auth-input>
+      </div>
+    </van-dialog>
+
+    <!-- 修改性别 -->
+    <van-action-sheet
+      v-model="sexShow"
+      :actions="actions"
+      description="修改性别"
+      cancel-text="取消"
+      close-on-click-action
+      @select="updateSex"
+    />
   </div>
 </template>
 
@@ -76,7 +93,9 @@ export default {
       rules: "",
       title: "",
       msg: "",
-      type: ""
+      type: "",
+      sexShow: false,
+      actions: [{ name: '女' }, { name: '男' }],
     };
   },
   components: {
@@ -122,8 +141,12 @@ export default {
     },
     /**
      * @description 显示弹出框
+     * @param {string} text 修改信息名称
+     * @param {RegExp} rule 验证的正则
+     * @param {string} msg 验证失败的提示文本
+     * @param {string} type 输入框类型
      */
-    showDialog(text, rule, msg, type = 'text') {
+    showDialog(text = "昵称", rule = /[0-9]/, msg = "失败", type = "text") {
       this.title = text;
       this.rules = rule;
       this.msg = msg;
@@ -134,12 +157,12 @@ export default {
      * @description 点击确认按钮后，修改用户信息
      */
     updatemsg() {
-      if(this.rules.test(this.updateText)){
+      if (this.rules.test(this.updateText)) {
         let data = {};
-        if(this.type == 'password') {
-          data = {password: this.updateText};
-        }else {
-          data = {nickname: this.updateText};
+        if (this.type == "password") {
+          data = { password: this.updateText };
+        } else {
+          data = { nickname: this.updateText };
         }
 
         this.$axios
@@ -147,12 +170,27 @@ export default {
           .then((res) => {
             this.$toast.success("修改成功");
 
-            if(this.type != 'password') {
+            if (this.type != "password") {
               this.nickname = this.updateText;
             }
           });
       }
+      // else {
+      //   setTimeout(() => {
+      //     this.show = true;
+      //     this.$toast.fail(this.msg);
+      //   }, 0);
+      // }
     },
+    updateSex(action, index) {
+      this.$axios.post('/user_update/' + localStorage.userId, {
+        gender: index
+      })
+      .then(res => {
+        this.$toast.success("修改成功");
+        this.gender = res.data.data.gender;
+      });
+    }
   },
 };
 </script>
