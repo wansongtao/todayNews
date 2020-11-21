@@ -3,11 +3,11 @@
     <!-- 用户信息 -->
     <router-link to="/personal/useredit">
       <div class="userinfo">
-        <img :src="head_img" alt="头像" v-if="head_img === 'string'" />
+        <img :src="head_img" alt="头像" v-if="head_img != ''" />
         <img src="../assets/user.jpg" alt="头像" v-else />
         <div class="username">
           <p>
-            <i :class="['iconfont', gender === 0 ? 'iconnan1' : 'iconnv']"></i
+            <i :class="['iconfont', gender === 1 ? 'iconnan1' : 'iconnv']"></i
             >{{ nickname }}
           </p>
           <span class="date">2020-11-20</span>
@@ -67,10 +67,10 @@ export default {
   created() {
     this.$axios.get("/user/" + localStorage.userId).then((res) => {
       const { gender, head_img, nickname, username } = res.data.data;
-
+      // console.log(res.data.data)
       this.gender = gender;
       if (head_img) {
-        if (head_img.indexof("http") == -1) {
+        if (head_img.indexOf("http") == -1) {
           this.head_img = sessionStorage.baseURL + head_img;
         }
       }
