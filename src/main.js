@@ -20,9 +20,14 @@ import {
 //导入文件上传组件
 import { Uploader } from 'vant';
 
+import { ActionSheet } from 'vant';
+
+
+
 import 'vant/lib/toast/style';
 import 'vant/lib/dialog/style';
 import 'vant/lib/uploader/style';
+import 'vant/lib/actionsheet/style';
 
 //引入axios处理请求
 import axios from 'axios';
@@ -38,6 +43,8 @@ Vue.use(Toast);
 Vue.use(Dialog);
 //全局注册文件上传组件
 Vue.use(Uploader);
+
+Vue.use(ActionSheet);
 
 // 将所有 Toast 的展示时长设置为 1500 毫秒
 Toast.setDefaultOptions({
