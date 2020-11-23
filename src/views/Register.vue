@@ -80,20 +80,16 @@ export default {
           //发送注册请求
           this.$axios
             .post("/register", {
-              username: this.userName,
-              password: this.userPwd,
-              nickname: this.nickName,
+              userName: this.userName,
+              userPwd: this.userPwd,
+              nickName: this.nickName,
             })
             .then((res) => {
               const data = res.data;
 
-              if (data.statusCode) {
-                //注册失败
-                this.$toast.fail(data.message);
-                _this_.isRegister = false;
-              } else {
+              if (data.statusCode === 200) {
                 //注册成功
-                this.$toast.success(data.message);
+                this.$toast.success(data.message || '注册成功');
 
                 //跳转登录页
                 setTimeout(() => {
@@ -101,6 +97,11 @@ export default {
 
                   _this_.$router.push("/login");
                 }, 1500);
+                
+              } else {
+                //注册失败
+                this.$toast.fail(data.message);
+                _this_.isRegister = false;
               }
             })
             .catch((err) => {

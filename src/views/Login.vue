@@ -77,7 +77,7 @@ export default {
 
             if(data.statusCode === 200) {
               //登录成功
-              _this_.$toast.success(data.message);
+              _this_.$toast.success(data.message || '登录成功');
               localStorage.setItem('token', data.data.token);
               
               //1.5s后跳转到首页
