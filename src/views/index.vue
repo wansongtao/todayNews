@@ -28,7 +28,7 @@
           <li
             v-for="(item, index) of category"
             :class="{ check_menu: index == liIndex }"
-            :key="item.id"
+            :key="item.categoryId + 'category'"
             @click.self="getNewsList(item.categoryId, index)"
           >
             {{ item.categoryName }}
