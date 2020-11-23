@@ -23,6 +23,7 @@
       msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
     ></auth-input>
     <auth-btn @click.native="userLogin"></auth-btn>
+    <auth-btn text="去注册" @click.native="register"></auth-btn>
   </div>
 </template>
 
@@ -124,6 +125,9 @@ export default {
           //点击取消按钮，后聚焦到用户名输入框
           this.$refs.username.$refs.inputdom.focus();
         });
+    },
+    register() {
+      this.$router.push('/register');
     }
   },
 };

@@ -4,7 +4,7 @@
     <router-link to="/personal/useredit">
       <div class="userinfo">
         <img :src="head_img" alt="头像" v-if="head_img != ''" />
-        <img src="../assets/user.jpg" alt="头像" v-else />
+        <img src="../../assets/user.jpg" alt="头像" v-else />
         <div class="username">
           <p>
             <i :class="['iconfont', gender === 1 ? 'iconnan1' : 'iconnv']"></i

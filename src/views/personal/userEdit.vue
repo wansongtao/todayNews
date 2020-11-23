@@ -6,7 +6,7 @@
     </h4>
     <div class="userimg">
       <img :src="head_img" alt="头像" v-if="head_img != ''" />
-      <img src="../assets/user.jpg" alt="头像" v-else />
+      <img src="../../assets/user.jpg" alt="头像" v-else />
       <div class="uploadimg">
         <van-uploader
           multiple
