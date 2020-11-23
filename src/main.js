@@ -89,10 +89,10 @@ axios.interceptors.response.use(res => {
 
 //路由守卫，to要跳转到的页面，from当前页面
 router.beforeEach((to, from, next) => {
-  const hasToken = localStorage.token, userId = localStorage.userId;
+  const hasToken = localStorage.token;
 
   if (to.path.indexOf('/personal') != -1) {
-    if (hasToken && userId) {
+    if (hasToken) {
       next();
     } else {
       router.push('/login').catch(err => {});

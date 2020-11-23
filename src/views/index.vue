@@ -29,9 +29,9 @@
             v-for="(item, index) of category"
             :class="{ check_menu: index == liIndex }"
             :key="item.id"
-            @click.self="getNewsList(item.id, index)"
+            @click.self="getNewsList(item.categoryId, index)"
           >
-            {{ item.name }}
+            {{ item.categoryName }}
           </li>
 
           <li><span class="iconfont iconjia"></span></li>
@@ -66,12 +66,12 @@ export default {
     return {
       liIndex: 0,
       category: [
-        { id: 1, name: "游戏" },
-        { id: 2, name: "历史" },
-        { id: 3, name: "军事" },
-        { id: 4, name: "娱乐" },
-        { id: 5, name: "社会" },
-        { id: 6, name: "政治" },
+        { categoryId: 1, categoryName: "游戏" },
+        { categoryId: 2, categoryName: "历史" },
+        { categoryId: 3, categoryName: "军事" },
+        { categoryId: 4, categoryName: "娱乐" },
+        { categoryId: 5, categoryName: "社会" },
+        { categoryId: 6, categoryName: "政治" },
       ],
       newList: [
         {
@@ -89,19 +89,12 @@ export default {
     this.$axios
       .get("/category")
       .then((res) => {
-        let categoryName = new Set(),
-          categoryArr = [];
+        let categoryArr = [];
         
-        //去重
-        res.data.data.forEach((element) => {
-          if (!categoryName.has(element.name)) {
-            categoryName.add(element.name);
-            categoryArr.push(element);
-          }
-        });
+        categoryArr = res.data.data.category;
 
         this.category = categoryArr.slice(0, 6);
-        this.getNewsList(this.category[0].id, 0);
+        this.getNewsList(this.category[0].categoryId, 0);
       });
   },
   methods: {
@@ -114,7 +107,7 @@ export default {
       this.liIndex = index;
 
       this.$axios
-        .get("http://157.122.54.189:9083/post", {
+        .get("/post", {
           params: {
             category: id,
           },
