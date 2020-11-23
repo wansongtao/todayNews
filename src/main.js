@@ -54,9 +54,9 @@ Toast.setDefaultOptions({
 Vue.prototype.$axios = axios;
 
 //设置服务器默认路径
-axios.defaults.baseURL = 'http://157.122.54.189:9083';
+axios.defaults.baseURL = 'http://127.0.0.1:5050';
 
-sessionStorage.baseURL = 'http://157.122.54.189:9083';
+sessionStorage.baseURL = 'http://127.0.0.1:5050';
 
 //axios请求拦截器，统一添加token
 axios.interceptors.request.use(config => {
@@ -67,18 +67,20 @@ axios.interceptors.request.use(config => {
   return config;
 });
 
-//axios接收拦截器
+//axios响应拦截器
 axios.interceptors.response.use(res => {
   const {
     message,
     statusCode
   } = res.data;
-  let codeRegExp = /^[45]\d{2}$/;
 
-  if (message == "用户信息验证失败!") {
+  let codeRegExp = /^[34]\d{2}$/;
+
+  if (statusCode == 500) {
+    //token验证失败
     router.replace('/login');
-  } else if (message && codeRegExp.test(statusCode)) {
-    Toast.fail(message);
+  } else if (codeRegExp.test(statusCode)) {
+    Toast.fail(message || '服务器繁忙，请稍后再试');
   }
 
   //必须要返回值，要不然其他axios请求获取不到值
@@ -100,11 +102,6 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
-// /**
-//  * @description 服务器地址
-//  */
-// Vue.prototype.$serverUrl = 'http://157.122.54.189:9083';
 
 new Vue({
   router,

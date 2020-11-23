@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import personalList from "../components/personalList";
+import personalList from "../../components/personalList";
 export default {
   data() {
     return {
@@ -65,7 +65,7 @@ export default {
     "personal-list": personalList,
   },
   created() {
-    this.$axios.get("/user/" + localStorage.userId).then((res) => {
+    this.$axios.get("http://157.122.54.189:9083/user/" + localStorage.userId).then((res) => {
       const { gender, head_img, nickname, username } = res.data.data;
       
       this.gender = gender;

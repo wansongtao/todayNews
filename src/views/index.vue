@@ -114,14 +114,14 @@ export default {
       this.liIndex = index;
 
       this.$axios
-        .get("/post", {
+        .get("http://157.122.54.189:9083/post", {
           params: {
             category: id,
           },
         })
         .then((res) => {
           let data = res.data.data;
-
+          
           if (data.length === 0) {
             this.$toast.fail("您没有关注任何新闻");
             this.newList = [];
@@ -155,7 +155,7 @@ export default {
     imgUrl(value) {
       
       if (value.indexOf("http") == -1) {
-        return sessionStorage.baseURL + value;
+        return 'http://157.122.54.189:9083' + value;
       } else {
         return value;
       }

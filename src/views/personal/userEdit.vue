@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import personalList from "../components/personalList";
-import AuthInput from "../components/AuthInput";
+import personalList from "../../components/personalList";
+import AuthInput from "../../components/AuthInput";
 export default {
   data() {
     return {

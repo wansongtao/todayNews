@@ -69,26 +69,27 @@ export default {
           
           //发送请求
           this.$axios.post('/login', {
-            username: _this_.userName,
-            password: _this_.userPwd
+            userName: _this_.userName,
+            userPwd: _this_.userPwd
           }).then(res => {
             const data = res.data;
 
-            if(data.statusCode) {
-              //登录失败
-              _this_.isLogin = false;
-              _this_.$toast.fail(data.message);
-            } else {
+            if(data.statusCode === 200) {
               //登录成功
               _this_.$toast.success(data.message);
               localStorage.setItem('token', data.data.token);
-              localStorage.userId = data.data.user.id;
               
               //1.5s后跳转到首页
               setTimeout(() => {
                 _this_.isLogin = false;
                 _this_.$router.push('/');
               }, 1500);
+              
+            } else {
+              //登录失败
+              console.log(data);
+              _this_.isLogin = false;
+              _this_.$toast.fail(data.message);
             }
           }).catch(err => {
             _this_.isLogin = false;

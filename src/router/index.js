@@ -4,12 +4,12 @@ import Index from '../views/index.vue';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import NewDetails from '../views/NewDetails';
-import Personal from '../views/Personal';
+import Personal from '../views/personal/Personal';
 import Search from '../views/Search';
-import userEdit from '../views/userEdit';
-import collect from '../views/collect';
-import commentList from '../views/commentList';
-import attention from '../views/attention';
+import userEdit from '../views/personal/userEdit';
+import collect from '../views/personal/collect';
+import commentList from '../views/personal/commentList';
+import attention from '../views/personal/attention';
 
 Vue.use(VueRouter);
 
