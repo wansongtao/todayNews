@@ -96,7 +96,7 @@ export default {
       msg: "",
       type: "",
       sexShow: false,
-      actions: [{ name: '男' }, { name: '女' }],
+      actions: [{ name: "男" }, { name: "女" }],
     };
   },
   components: {
@@ -106,7 +106,7 @@ export default {
   created() {
     this.$axios.get("/userdetail").then((res) => {
       const { gender, head_img, nickName, userName } = res.data.data.userDetail;
-      
+
       this.gender = parseInt(gender);
       if (head_img) {
         if (head_img.indexOf("http") == -1) {
@@ -122,6 +122,9 @@ export default {
     onOversize() {
       this.$toast.fail("文件大小不能超过500kb");
     },
+    /**
+     * @description 修改用户头像
+     */
     afterRead(file) {
       // console.log(file);
 
@@ -161,35 +164,46 @@ export default {
       if (this.rules.test(this.updateText)) {
         let data = {};
         if (this.type == "password") {
-          data = { password: this.updateText };
+          data = { userPwd: this.updateText };
+
+          this.$axios.post("/useredit", data).then((res) => {
+            this.$toast.success(res.data.message || "修改成功");
+          });
         } else {
-          data = { nickname: this.updateText };
-        }
+          if (this.nickname != this.updateText) {
+            //只有昵称改变了才发送请求
+            data = { nickName: this.updateText };
 
-        this.$axios
-          .post("/user_update/" + localStorage.userId, data)
-          .then((res) => {
-            this.$toast.success("修改成功");
+            this.$axios.post("/useredit", data).then((res) => {
+              this.$toast.success(res.data.message || "修改成功");
 
-            if (this.type != "password") {
               this.nickname = this.updateText;
+            });
+          }
+        }
+      }
+    },
+    /**
+     * @description 修改性别
+     */
+    updateSex(action, index) {
+      if (this.gender != index) {
+        //只有当性别改变了才发送请求
+        this.$axios
+          .post("/useredit", {
+            gender: index,
+          })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.$toast.success(res.data.message || "修改成功");
+              this.gender = index;
             }
           });
       }
-      
-    },
-    updateSex(action, index) {
-      this.$axios.post('/user_update/' + localStorage.userId, {
-        gender: index
-      })
-      .then(res => {
-        this.$toast.success("修改成功");
-        this.gender = res.data.data.gender;
-      });
     },
     beforeClose(action, done) {
-      if(action == 'confirm') {
-        if(!this.rules.test(this.updateText)) {
+      if (action == "confirm") {
+        if (!this.rules.test(this.updateText)) {
           this.$toast.fail(this.msg);
           done(false);
         } else {
@@ -198,7 +212,7 @@ export default {
       } else {
         done();
       }
-    }
+    },
   },
 };
 </script>
