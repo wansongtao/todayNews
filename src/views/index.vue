@@ -44,15 +44,15 @@
           v-for="(item, index) in newList"
           :key="index + 'newlist'"
           class="article"
-          @click="jumpPage(item.id)"
+          @click="jumpPage(item.newsId)"
         >
           <div class="article_left">
-            <p>{{ item.title }}</p>
-            <span>评论 {{ item.comment }}</span>
+            <p>{{ item.newsTitle }}</p>
+            <span>评论 {{ item.commentNums || 0 }}</span>
           </div>
 
           <div class="article_right">
-            <img :src="item.img | imgUrl" :alt="item.title" />
+            <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" />
           </div>
         </li>
       </ul>
@@ -75,11 +75,11 @@ export default {
       ],
       newList: [
         {
-          id: 1,
-          title: "阿信发文谈与周杰伦合作",
-          img:
+          newsId: 1,
+          newsTitle: "阿信发文谈与周杰伦合作",
+          newsCover:
             "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
-          comment: 12,
+          commentNums: 12,
         },
       ],
     };
@@ -107,10 +107,10 @@ export default {
       this.liIndex = index;
 
       this.$axios
-        .get("/post", {
+        .get("/newsList", {
           params: {
-            category: id,
-          },
+            categoryId: id,
+          }
         })
         .then((res) => {
           let data = res.data.data;
@@ -121,12 +121,12 @@ export default {
           } else {
             this.newList = [];
 
-            data.forEach((item) => {
+            data.newList.forEach((item) => {
               this.newList.push({
-                id: item.id,
-                title: item.title,
-                img: item.cover[0].url,
-                comment: item.comment_length,
+                newsId: item.newsId,
+                newsTitle: item.newsTitle,
+                newsCover: item.newsCover,
+                commentNums: item.commentNums,
               });
             });
           }
@@ -148,7 +148,7 @@ export default {
     imgUrl(value) {
       
       if (value.indexOf("http") == -1) {
-        return 'http://157.122.54.189:9083' + value;
+        return sessionStorage.baseURL + value;
       } else {
         return value;
       }

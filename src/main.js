@@ -60,8 +60,8 @@ sessionStorage.baseURL = 'http://127.0.0.1:5050';
 
 //axios请求拦截器，统一添加token
 axios.interceptors.request.use(config => {
-  if (!config.headers.Authorization && localStorage.token) {
-    config.headers.Authorization = localStorage.token;
+  if (!config.headers.authorization && localStorage.token) {
+    config.headers.authorization = localStorage.token;
   }
 
   return config;

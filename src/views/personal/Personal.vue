@@ -7,8 +7,8 @@
         <img src="../../assets/user.jpg" alt="头像" v-else />
         <div class="username">
           <p>
-            <i :class="['iconfont', gender === 1 ? 'iconnan1' : 'iconnv']"></i
-            >{{ nickname }}
+            <i :class="['iconfont', gender === 0 ? 'iconnan1' : 'iconnv']"></i
+            >{{ nickName }}
           </p>
           <span class="date">2020-11-20</span>
         </div>
@@ -58,17 +58,17 @@ export default {
     return {
       gender: 1,
       head_img: "",
-      nickname: "",
+      nickName: "",
     };
   },
   components: {
     "personal-list": personalList,
   },
   created() {
-    this.$axios.get("http://157.122.54.189:9083/user/" + localStorage.userId).then((res) => {
-      const { gender, head_img, nickname, username } = res.data.data;
+    this.$axios.get("/userdetail").then((res) => {
+      const { gender, head_img, nickName, userName } = res.data.data.userDetail;
       
-      this.gender = gender;
+      this.gender = parseInt(gender);
       if (head_img) {
         if (head_img.indexOf("http") == -1) {
           this.head_img = sessionStorage.baseURL + head_img;
@@ -76,13 +76,12 @@ export default {
           this.head_img = head_img;
         }
       }
-      this.nickname = nickname || username;
+      this.nickName = nickName || userName;
     });
   },
   methods: {
     handlerClick() {
       delete localStorage.token;
-      delete localStorage.userId;
     },
   },
 };

@@ -43,7 +43,7 @@
 
       <personal-list
         listtext="性别"
-        :detailtext="gender === 1 ? '男' : '女'"
+        :detailtext="gender === 0 ? '男' : '女'"
         @click.native="sexShow = true"
       ></personal-list>
     </div>
@@ -96,7 +96,7 @@ export default {
       msg: "",
       type: "",
       sexShow: false,
-      actions: [{ name: '女' }, { name: '男' }],
+      actions: [{ name: '男' }, { name: '女' }],
     };
   },
   components: {
@@ -104,10 +104,10 @@ export default {
     "auth-input": AuthInput,
   },
   created() {
-    this.$axios.get("/user/" + localStorage.userId).then((res) => {
-      const { gender, head_img, nickname } = res.data.data;
-
-      this.gender = gender;
+    this.$axios.get("/userdetail").then((res) => {
+      const { gender, head_img, nickName, userName } = res.data.data.userDetail;
+      
+      this.gender = parseInt(gender);
       if (head_img) {
         if (head_img.indexOf("http") == -1) {
           this.head_img = sessionStorage.baseURL + head_img;
@@ -115,7 +115,7 @@ export default {
           this.head_img = head_img;
         }
       }
-      this.nickname = nickname;
+      this.nickname = nickName || userName;
     });
   },
   methods: {
