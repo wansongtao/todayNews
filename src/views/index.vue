@@ -29,7 +29,7 @@
             v-for="(item, index) of postContent"
             :class="{ check_menu: index == currentIndex }"
             :key="item.categoryId + 'category'"
-            @click.self="getNewsList(item.categoryId, index)"
+            @click.self="currentIndex = index"
           >
             {{ item.categoryName }}
           </li>
@@ -73,11 +73,12 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
         },
         {
           categoryId: 2,
@@ -86,8 +87,7 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
@@ -99,8 +99,7 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
@@ -112,8 +111,7 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
@@ -125,8 +123,7 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
@@ -138,8 +135,7 @@ export default {
             {
               newsId: 1,
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover:
-                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              newsCover: "/upload/img/hy10.jpg",
               commentNums: 12,
             },
           ],
@@ -158,29 +154,39 @@ export default {
         return {
           ...item,
           newList: [],
+          currentPage: 1,
+          pageSize: 3,
         };
       });
 
       this.getNewsList(this.postContent[0].categoryId, 0);
     });
   },
+  watch: {
+    currentIndex() {
+      //当前分类没有数据时，才请求数据
+      if (this.postContent[this.currentIndex].newList.length == 0) {
+        this.getNewsList();
+      }
+    },
+  },
   methods: {
     /**
      * @description 获取对应栏目的新闻列表
-     * @param {number} id 类目id
-     * @param {number} index 当前点击栏目元素的索引
      */
-    getNewsList(id, index) {
-      this.currentIndex = index;
+    getNewsList() {
+      const categoryData = this.postContent[this.currentIndex];
 
-      if (this.postContent[this.currentIndex].newList.length == 0) {
-        this.$axios
-          .get("/newsList", {
-            params: {
-              categoryId: id,
-            },
-          })
-          .then((res) => {
+      this.$axios
+        .get("/newsList", {
+          params: {
+            categoryId: categoryData.categoryId,
+            currentPage: categoryData.currentPage,
+            pageSize: categoryData.pageSize,
+          },
+        })
+        .then((res) => {
+          if (res.data.statusCode == 200) {
             let data = res.data.data;
             if (data.length === 0) {
               this.$toast.fail("您没有关注任何新闻");
@@ -188,8 +194,8 @@ export default {
             } else {
               this.postContent[this.currentIndex].newList = data.newList;
             }
-          });
-      }
+          }
+        });
     },
     /**
      * @description 跳转到新闻详情
