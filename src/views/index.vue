@@ -1,5 +1,5 @@
 <template>
-<!-- @click.capture="'capture';" -->
+  <!-- @click.capture="'capture';" -->
   <div class="index-container">
     <header>
       <!-- 顶部工具栏 -->
@@ -26,8 +26,8 @@
       <div class="top_menu_list">
         <ul>
           <li
-            v-for="(item, index) of category"
-            :class="{ check_menu: index == liIndex }"
+            v-for="(item, index) of postContent"
+            :class="{ check_menu: index == currentIndex }"
             :key="item.categoryId + 'category'"
             @click.self="getNewsList(item.categoryId, index)"
           >
@@ -41,7 +41,7 @@
     <main>
       <ul>
         <li
-          v-for="(item, index) in newList"
+          v-for="(item, index) in postContent[currentIndex].newList"
           :key="index + 'newlist'"
           class="article"
           @click="jumpPage(item.newsId)"
@@ -64,38 +64,105 @@
 export default {
   data() {
     return {
-      liIndex: 0,
-      category: [
-        { categoryId: 1, categoryName: "游戏" },
-        { categoryId: 2, categoryName: "历史" },
-        { categoryId: 3, categoryName: "军事" },
-        { categoryId: 4, categoryName: "娱乐" },
-        { categoryId: 5, categoryName: "社会" },
-        { categoryId: 6, categoryName: "政治" },
-      ],
-      newList: [
+      currentIndex: 0,
+      postContent: [
         {
-          newsId: 1,
-          newsTitle: "阿信发文谈与周杰伦合作",
-          newsCover:
-            "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
-          commentNums: 12,
+          categoryId: 1,
+          categoryName: "游戏",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
+        },
+        {
+          categoryId: 2,
+          categoryName: "历史",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
+        },
+        {
+          categoryId: 3,
+          categoryName: "军事",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
+        },
+        {
+          categoryId: 4,
+          categoryName: "娱乐",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
+        },
+        {
+          categoryId: 5,
+          categoryName: "社会",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
+        },
+        {
+          categoryId: 6,
+          categoryName: "政治",
+          newList: [
+            {
+              newsId: 1,
+              newsTitle: "阿信发文谈与周杰伦合作",
+              newsCover:
+                "http://cms-bucket.ws.126.net/2019/09/17/703782e03135454781ae73ef602e71ba.jpeg?imageView&thumbnail=750x0&quality=85&type=jpg&interlace=1",
+              commentNums: 12,
+            },
+          ],
         },
       ],
     };
   },
   created() {
     //获取栏目列表数据
-    this.$axios
-      .get("/category")
-      .then((res) => {
-        let categoryArr = [];
-        
-        categoryArr = res.data.data.category;
+    this.$axios.get("/category").then((res) => {
+      let categoryArr = [];
 
-        this.category = categoryArr.slice(0, 6);
-        this.getNewsList(this.category[0].categoryId, 0);
+      categoryArr = res.data.data.category.slice(0, 6);
+
+      this.postContent = categoryArr.map((item) => {
+        return {
+          ...item,
+          newList: [],
+        };
       });
+
+      this.getNewsList(this.postContent[0].categoryId, 0);
+    });
   },
   methods: {
     /**
@@ -104,33 +171,25 @@ export default {
      * @param {number} index 当前点击栏目元素的索引
      */
     getNewsList(id, index) {
-      this.liIndex = index;
+      this.currentIndex = index;
 
-      this.$axios
-        .get("/newsList", {
-          params: {
-            categoryId: id,
-          }
-        })
-        .then((res) => {
-          let data = res.data.data;
-          
-          if (data.length === 0) {
-            this.$toast.fail("您没有关注任何新闻");
-            this.newList = [];
-          } else {
-            this.newList = [];
-
-            data.newList.forEach((item) => {
-              this.newList.push({
-                newsId: item.newsId,
-                newsTitle: item.newsTitle,
-                newsCover: item.newsCover,
-                commentNums: item.commentNums,
-              });
-            });
-          }
-        });
+      if (this.postContent[this.currentIndex].newList.length == 0) {
+        this.$axios
+          .get("/newsList", {
+            params: {
+              categoryId: id,
+            },
+          })
+          .then((res) => {
+            let data = res.data.data;
+            if (data.length === 0) {
+              this.$toast.fail("您没有关注任何新闻");
+              this.newList = [];
+            } else {
+              this.postContent[this.currentIndex].newList = data.newList;
+            }
+          });
+      }
     },
     /**
      * @description 跳转到新闻详情
@@ -138,9 +197,9 @@ export default {
      */
     jumpPage(id) {
       //跳转并传参
-      this.$router.push({ name: 'NewDetails', params: { id: id }});
+      this.$router.push({ name: "NewDetails", params: { id: id } });
     },
-  }
+  },
 };
 </script>
 
