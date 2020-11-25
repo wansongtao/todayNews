@@ -5,7 +5,7 @@
       >编辑资料
     </h4>
     <div class="userimg">
-      <img :src="head_img" alt="头像" v-if="head_img != ''" />
+      <img :src="head_img | imgUrl" alt="头像" v-if="head_img != ''" />
       <img src="../../assets/user.jpg" alt="头像" v-else />
       <div class="uploadimg">
         <van-uploader
@@ -23,22 +23,13 @@
       <personal-list
         listtext="昵称"
         :detailtext="nickname"
-        @click.native="
-          showDialog('昵称', /^[\u4e00-\u9fa5]{2,7}$/, '请输入2-7位中文昵称')
-        "
+        @click.native="nickNameShow = true"
       ></personal-list>
 
       <personal-list
         listtext="密码"
         detailtext="******"
-        @click.native="
-          showDialog(
-            '密码',
-            /^[a-zA-Z][\w]{5,15}$/,
-            '请输入6-16位字母、数字、下划线组合且以字母开头的密码',
-            'password'
-          )
-        "
+        @click.native="userPwdShow = true"
       ></personal-list>
 
       <personal-list
@@ -48,22 +39,52 @@
       ></personal-list>
     </div>
 
-    <!-- 弹出框修改昵称和密码 -->
+    <!-- 弹出框修改昵称 -->
     <van-dialog
-      v-model="show"
-      :title="'修改' + title"
+      v-model="nickNameShow"
+      title="修改昵称"
       show-cancel-button
-      @confirm="updatemsg"
-      @cancel="updateText = ''"
-      :before-close="beforeClose"
+      @confirm="updateName"
+      @cancel="updateNickName = ''"
+      :before-close="beforeCloseName"
     >
       <div class="updatemsg">
         <auth-input
-          :type="type"
-          v-model="updateText"
-          :placeholder="title"
-          :pattern="rules"
-          :msg="msg"
+          type="text"
+          v-model="updateNickName"
+          placeholder="请输入昵称"
+          :pattern="rules.nickName"
+          msg="请输入2-7位中文昵称"
+        ></auth-input>
+      </div>
+    </van-dialog>
+
+    <!-- 修改密码 -->
+    <van-dialog
+      v-model="userPwdShow"
+      title="修改密码"
+      show-cancel-button
+      @confirm="updatePwd"
+      @cancel="
+        oldPwd = '';
+        newPwd = '';
+      "
+      :before-close="beforeClosePwd"
+    >
+      <div class="updatemsg">
+        <auth-input
+          type="password"
+          v-model="oldPwd"
+          placeholder="原密码"
+          :pattern="rules.userPwd"
+          msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
+        ></auth-input>
+        <auth-input
+          type="password"
+          v-model="newPwd"
+          placeholder="新密码"
+          :pattern="rules.userPwd"
+          msg="请输入6-16位字母、数字、下划线组合且以字母开头的密码"
         ></auth-input>
       </div>
     </van-dialog>
@@ -89,12 +110,15 @@ export default {
       head_img: "",
       gender: 1,
       nickname: "浮生若梦",
-      show: false,
-      updateText: "",
-      rules: "",
-      title: "",
-      msg: "",
-      type: "",
+      nickNameShow: false,
+      updateNickName: "",
+      userPwdShow: false,
+      oldPwd: "",
+      newPwd: "",
+      rules: {
+        nickName: /^[\u4e00-\u9fa5]{2,7}$/,
+        userPwd: /^[a-zA-Z][\w]{5,15}$/,
+      },
       sexShow: false,
       actions: [{ name: "男" }, { name: "女" }],
     };
@@ -109,11 +133,7 @@ export default {
 
       this.gender = parseInt(gender);
       if (head_img) {
-        if (head_img.indexOf("http") == -1) {
-          this.head_img = sessionStorage.baseURL + head_img;
-        } else {
-          this.head_img = head_img;
-        }
+        this.head_img = head_img;
       }
       this.nickname = nickName || userName;
     });
@@ -144,42 +164,19 @@ export default {
       });
     },
     /**
-     * @description 显示弹出框
-     * @param {string} text 修改信息名称
-     * @param {RegExp} rule 验证的正则
-     * @param {string} msg 验证失败的提示文本
-     * @param {string} type 输入框类型
+     * @description 修改昵称
      */
-    showDialog(text = "昵称", rule = /[0-9]/, msg = "失败", type = "text") {
-      this.title = text;
-      this.rules = rule;
-      this.msg = msg;
-      this.type = type;
-      this.show = true;
-    },
-    /**
-     * @description 点击确认按钮后，修改用户信息
-     */
-    updatemsg() {
-      if (this.rules.test(this.updateText)) {
-        let data = {};
-        if (this.type == "password") {
-          data = { userPwd: this.updateText };
+    updateName() {
+      if (this.rules.nickName.test(this.updateNickName)) {
+        if (this.nickname != this.updateNickName) {
+          //只有昵称改变了才发送请求
+          let data = { nickName: this.updateNickName };
 
           this.$axios.post("/useredit", data).then((res) => {
             this.$toast.success(res.data.message || "修改成功");
+
+            this.nickname = this.updateNickName;
           });
-        } else {
-          if (this.nickname != this.updateText) {
-            //只有昵称改变了才发送请求
-            data = { nickName: this.updateText };
-
-            this.$axios.post("/useredit", data).then((res) => {
-              this.$toast.success(res.data.message || "修改成功");
-
-              this.nickname = this.updateText;
-            });
-          }
         }
       }
     },
@@ -201,10 +198,13 @@ export default {
           });
       }
     },
-    beforeClose(action, done) {
+    /**
+     * @description 关闭修改昵称弹出框之前
+     */
+    beforeCloseName(action, done) {
       if (action == "confirm") {
-        if (!this.rules.test(this.updateText)) {
-          this.$toast.fail(this.msg);
+        if (!this.rules.nickName.test(this.updateNickName)) {
+          this.$toast.fail("请输入2-7位中文昵称");
           done(false);
         } else {
           done();
@@ -213,6 +213,56 @@ export default {
         done();
       }
     },
+    /**
+     * @description 修改密码
+     */
+    updatePwd() {
+      if (this.oldPwd != this.newPwd) {
+        if (
+          this.rules.userPwd.test(this.oldPwd) &&
+          this.rules.userPwd.test(this.newPwd)
+        ) {
+          this.$axios
+            .post("/updatepwd", {
+              oldPwd: this.oldPwd,
+              newPwd: this.newPwd,
+            })
+            .then((res) => {
+              if (res.data.statusCode == 200) {
+                this.$toast.success(res.data.message || "修改成功");
+              }
+            });
+        }
+      }
+    },
+    /**
+     * @description 关闭修改密码弹出框之前
+     */
+    beforeClosePwd(action, done) {
+      if (action == "confirm") {
+        if (
+          !this.rules.userPwd.test(this.oldPwd) ||
+          !this.rules.userPwd.test(this.newPwd)
+        ) {
+          this.$toast.fail(
+            "请输入6-16位字母、数字、下划线组合且以字母开头的密码"
+          );
+          done(false);
+        } else if (this.oldPwd == this.newPwd) {
+          this.$toast.fail('新密码不能和原密码相同');
+          done(false);
+        }
+        else {
+          this.oldPwd = '';
+          this.newPwd = '';
+          done();
+        }
+      } else {
+        this.oldPwd = '';
+        this.newPwd = '';
+        done();
+      }
+    }
   },
 };
 </script>

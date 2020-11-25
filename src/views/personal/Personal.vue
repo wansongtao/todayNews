@@ -3,7 +3,7 @@
     <!-- 用户信息 -->
     <router-link to="/personal/useredit">
       <div class="userinfo">
-        <img :src="head_img" alt="头像" v-if="head_img != ''" />
+        <img :src="head_img | imgUrl" alt="头像" v-if="head_img != ''" />
         <img src="../../assets/user.jpg" alt="头像" v-else />
         <div class="username">
           <p>
@@ -76,11 +76,7 @@ export default {
 
         this.gender = parseInt(gender);
         if (head_img) {
-          if (head_img.indexOf("http") == -1) {
-            this.head_img = sessionStorage.baseURL + head_img;
-          } else {
-            this.head_img = head_img;
-          }
+          this.head_img = head_img;
         }
         this.nickName = nickName || userName;
       }
