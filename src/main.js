@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import axios from './axios';
 
 //导入组件库
 // import Vant from 'vant';
@@ -28,9 +29,6 @@ import { ActionSheet } from 'vant';
 // import 'vant/lib/uploader/style';
 // import 'vant/lib/actionsheet/style';
 
-//引入axios处理请求
-import axios from 'axios';
-
 Vue.config.productionTip = false;
 
 //注册vant ui组件库的标签
@@ -53,40 +51,6 @@ Toast.setDefaultOptions({
 //挂到原型上
 Vue.prototype.$axios = axios;
 
-//设置服务器默认路径
-axios.defaults.baseURL = 'http://127.0.0.1:5050';
-
-sessionStorage.baseURL = 'http://127.0.0.1:5050';
-
-//axios请求拦截器，统一添加token
-axios.interceptors.request.use(config => {
-  if (!config.headers.authorization && localStorage.token) {
-    config.headers.authorization = localStorage.token;
-  }
-
-  return config;
-});
-
-//axios响应拦截器
-axios.interceptors.response.use(res => {
-  const {
-    message,
-    statusCode
-  } = res.data;
-
-  let codeRegExp = /^[34]\d{2}$/;
-
-  if (statusCode == 500) {
-    //token验证失败
-    router.replace('/login');
-  } else if (codeRegExp.test(statusCode)) {
-    Toast.fail(message || '服务器繁忙，请稍后再试');
-  }
-
-  //必须要返回值，要不然其他axios请求获取不到值
-  return res;
-});
-
 //路由守卫，to要跳转到的页面，from当前页面
 router.beforeEach((to, from, next) => {
   const hasToken = localStorage.token;
@@ -100,6 +64,14 @@ router.beforeEach((to, from, next) => {
   } else {
     //必须调用，否则不能跳转到下一个页面
     next();
+  }
+});
+
+Vue.filter('imgUrl', (value) => {
+  if (value.indexOf("http") == -1) {
+    return axios.defaults.baseURL + value;
+  } else {
+    return value;
   }
 });
 

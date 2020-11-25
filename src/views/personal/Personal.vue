@@ -66,17 +66,24 @@ export default {
   },
   created() {
     this.$axios.get("/userdetail").then((res) => {
-      const { gender, head_img, nickName, userName } = res.data.data.userDetail;
-      
-      this.gender = parseInt(gender);
-      if (head_img) {
-        if (head_img.indexOf("http") == -1) {
-          this.head_img = sessionStorage.baseURL + head_img;
-        } else {
-          this.head_img = head_img;
+      if (res.data.statusCode == 200) {
+        const {
+          gender,
+          head_img,
+          nickName,
+          userName,
+        } = res.data.data.userDetail;
+
+        this.gender = parseInt(gender);
+        if (head_img) {
+          if (head_img.indexOf("http") == -1) {
+            this.head_img = sessionStorage.baseURL + head_img;
+          } else {
+            this.head_img = head_img;
+          }
         }
+        this.nickName = nickName || userName;
       }
-      this.nickName = nickName || userName;
     });
   },
   methods: {

@@ -140,20 +140,7 @@ export default {
       //跳转并传参
       this.$router.push({ name: 'NewDetails', params: { id: id }});
     },
-  },
-  filters: {
-    /**
-     * @description 给图片路径加上服务器地址
-     */
-    imgUrl(value) {
-      
-      if (value.indexOf("http") == -1) {
-        return sessionStorage.baseURL + value;
-      } else {
-        return value;
-      }
-    },
-  },
+  }
 };
 </script>
 
