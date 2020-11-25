@@ -151,15 +151,17 @@ export default {
       const data = new FormData();
       data.append("file", file.file);
 
-      this.$axios.post("/upload", data).then((res) => {
-        this.head_img = sessionStorage.baseURL + res.data.data.url;
+      //先上传文件
+      this.$axios.post("/uploadfile", data).then((res) => {
+        this.head_img = res.data.data.imgUrl;
 
+        //再修改头像
         this.$axios
-          .post("/user_update/" + localStorage.userId, {
+          .post("/useredit", {
             head_img: this.head_img,
           })
           .then((res) => {
-            this.$toast.success("修改成功");
+            this.$toast.success(res.data.message || "修改成功");
           });
       });
     },
@@ -249,20 +251,19 @@ export default {
           );
           done(false);
         } else if (this.oldPwd == this.newPwd) {
-          this.$toast.fail('新密码不能和原密码相同');
+          this.$toast.fail("新密码不能和原密码相同");
           done(false);
-        }
-        else {
-          this.oldPwd = '';
-          this.newPwd = '';
+        } else {
+          this.oldPwd = "";
+          this.newPwd = "";
           done();
         }
       } else {
-        this.oldPwd = '';
-        this.newPwd = '';
+        this.oldPwd = "";
+        this.newPwd = "";
         done();
       }
-    }
+    },
   },
 };
 </script>
