@@ -22,14 +22,8 @@ import {
 import { Uploader } from 'vant';
 
 import { ActionSheet } from 'vant';
-
-
-// import 'vant/lib/toast/style';
-// import 'vant/lib/dialog/style';
-// import 'vant/lib/uploader/style';
-// import 'vant/lib/actionsheet/style';
-
-Vue.config.productionTip = false;
+import { List } from 'vant';
+// import { PullRefresh } from 'vant';
 
 //注册vant ui组件库的标签
 // Vue.use(Vant);
@@ -40,8 +34,16 @@ Vue.use(Toast);
 Vue.use(Dialog);
 //全局注册文件上传组件
 Vue.use(Uploader);
-
 Vue.use(ActionSheet);
+Vue.use(List);
+// Vue.use(PullRefresh);
+
+// import 'vant/lib/toast/style';
+// import 'vant/lib/dialog/style';
+// import 'vant/lib/uploader/style';
+// import 'vant/lib/actionsheet/style';
+
+Vue.config.productionTip = false;
 
 // 将所有 Toast 的展示时长设置为 1500 毫秒
 Toast.setDefaultOptions({

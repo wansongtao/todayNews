@@ -28,7 +28,7 @@
           <li
             v-for="(item, index) of postContent"
             :class="{ check_menu: index == currentIndex }"
-            :key="item.categoryId + 'category'"
+            :key="'index_category' + item.categoryId"
             @click.self="currentIndex = index"
           >
             {{ item.categoryName }}
@@ -39,23 +39,31 @@
       </div>
     </header>
     <main>
-      <ul>
-        <li
-          v-for="(item, index) in postContent[currentIndex].newList"
-          :key="index + 'newlist'"
-          class="article"
-          @click="jumpPage(item.newsId)"
+      <article>
+        <van-list
+          v-model="postContent[currentIndex].loading"
+          :immediate-check="false"
+          :finished="postContent[currentIndex].finished"
+          finished-text="我也是有底线的~"
+          @load="LoadNews"
         >
-          <div class="article_left">
-            <p>{{ item.newsTitle }}</p>
-            <span>评论 {{ item.commentNums || 0 }}</span>
-          </div>
+          <div
+            v-for="(item, index) in postContent[currentIndex].newList"
+            :key="index + 'newlist'"
+            class="article"
+            @click="jumpPage(item.newsId)"
+          >
+            <div class="article_left">
+              <p>{{ item.newsTitle }}</p>
+              <span>评论 {{ item.commentNums || 0 }}</span>
+            </div>
 
-          <div class="article_right">
-            <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" />
+            <div class="article_right">
+              <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" />
+            </div>
           </div>
-        </li>
-      </ul>
+        </van-list>
+      </article>
     </main>
   </div>
 </template>
@@ -79,10 +87,12 @@ export default {
           ],
           currentPage: 1,
           pageSize: 3,
+          finished: false,
+          loading: false,
         },
         {
-          categoryId: 2,
-          categoryName: "历史",
+          categoryId: 11,
+          categoryName: "游戏",
           newList: [
             {
               newsId: 1,
@@ -91,10 +101,14 @@ export default {
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
+          finished: false,
+          loading: false,
         },
         {
-          categoryId: 3,
-          categoryName: "军事",
+          categoryId: 111,
+          categoryName: "游戏",
           newList: [
             {
               newsId: 1,
@@ -103,10 +117,14 @@ export default {
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
+          finished: false,
+          loading: false,
         },
         {
-          categoryId: 4,
-          categoryName: "娱乐",
+          categoryId: 1111,
+          categoryName: "游戏",
           newList: [
             {
               newsId: 1,
@@ -115,10 +133,14 @@ export default {
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
+          finished: false,
+          loading: false,
         },
         {
-          categoryId: 5,
-          categoryName: "社会",
+          categoryId: 12,
+          categoryName: "游戏",
           newList: [
             {
               newsId: 1,
@@ -127,10 +149,14 @@ export default {
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
+          finished: false,
+          loading: false,
         },
         {
-          categoryId: 6,
-          categoryName: "政治",
+          categoryId: 8,
+          categoryName: "游戏",
           newList: [
             {
               newsId: 1,
@@ -139,6 +165,10 @@ export default {
               commentNums: 12,
             },
           ],
+          currentPage: 1,
+          pageSize: 3,
+          finished: false,
+          loading: false,
         },
       ],
     };
@@ -156,10 +186,12 @@ export default {
           newList: [],
           currentPage: 1,
           pageSize: 3,
+          finished: false,
+          loading: false,
         };
       });
 
-      this.getNewsList(this.postContent[0].categoryId, 0);
+      this.getNewsList();
     });
   },
   watch: {
@@ -188,12 +220,19 @@ export default {
         .then((res) => {
           if (res.data.statusCode == 200) {
             let data = res.data.data;
-            if (data.length === 0) {
-              this.$toast.fail("您没有关注任何新闻");
-              this.newList = [];
-            } else {
-              this.postContent[this.currentIndex].newList = data.newList;
+
+            //加载完成
+            this.postContent[this.currentIndex].loading = false;
+
+            if (data.newList.length < categoryData.pageSize) {
+              //当返回的数据不足时，设置为加载完状态
+              this.postContent[this.currentIndex].finished = true;
             }
+
+            let newArr = this.postContent[this.currentIndex].newList.concat(
+              data.newList
+            );
+            this.postContent[this.currentIndex].newList = newArr;
           }
         });
     },
@@ -204,6 +243,11 @@ export default {
     jumpPage(id) {
       //跳转并传参
       this.$router.push({ name: "NewDetails", params: { id: id } });
+    },
+    LoadNews() {
+      this.postContent[this.currentIndex].currentPage += 1;
+
+      this.getNewsList();
     },
   },
 };
