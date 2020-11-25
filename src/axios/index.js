@@ -1,6 +1,10 @@
 //引入axios处理请求
 import axios from 'axios';
 import router from '../router';
+import {
+  Toast
+} from 'vant';
+import 'vant/lib/toast/style';
 
 //设置服务器默认路径
 axios.defaults.baseURL = 'http://127.0.0.1:5050';
