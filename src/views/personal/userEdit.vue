@@ -10,7 +10,6 @@
       <div class="uploadimg">
         <van-uploader
           multiple
-          accept="all"
           :max-count="1"
           :max-size="500 * 1024"
           @oversize="onOversize"

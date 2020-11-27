@@ -88,7 +88,6 @@ export default {
               
             } else {
               //登录失败
-              console.log(data);
               _this_.isLogin = false;
               _this_.$toast.fail(data.message);
             }
