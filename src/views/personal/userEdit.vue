@@ -10,6 +10,7 @@
       <div class="uploadimg">
         <van-uploader
           multiple
+          accept="all"
           :max-count="1"
           :max-size="500 * 1024"
           @oversize="onOversize"
@@ -153,16 +154,18 @@ export default {
 
       //先上传文件
       this.$axios.post("/uploadfile", data).then((res) => {
-        this.head_img = res.data.data.imgUrl;
+        if (res.data.statusCode == 200) {
+          this.head_img = res.data.data.imgUrl;
 
-        //再修改头像
-        this.$axios
-          .post("/useredit", {
-            head_img: this.head_img,
-          })
-          .then((res) => {
-            this.$toast.success(res.data.message || "修改成功");
-          });
+          //再修改头像
+          this.$axios
+            .post("/useredit", {
+              head_img: this.head_img,
+            })
+            .then((res) => {
+              this.$toast.success(res.data.message || "修改成功");
+            });
+        }
       });
     },
     /**

@@ -55,11 +55,13 @@
           >
             <div class="article_left">
               <p>{{ item.newsTitle }}</p>
+              <span>{{item.nickName}}</span>
               <span>评论 {{ item.commentNums || 0 }}</span>
             </div>
 
             <div class="article_right">
-              <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" />
+              <img src="../assets/user.jpg" alt="新闻封面" v-if="item.newsCover === ''">
+              <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" v-else/>
             </div>
           </div>
         </van-list>
@@ -80,8 +82,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -96,8 +99,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -112,8 +116,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -128,8 +133,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -144,8 +150,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -160,8 +167,9 @@ export default {
           newList: [
             {
               newsId: 1,
+              nickName: '梅花日报',
               newsTitle: "阿信发文谈与周杰伦合作",
-              newsCover: "/upload/img/hy10.jpg",
+              newsCover: "",
               commentNums: 12,
             },
           ],
@@ -185,7 +193,7 @@ export default {
           ...item,
           newList: [],
           currentPage: 1,
-          pageSize: 3,
+          pageSize: 10,
           finished: false,
           loading: false,
         };
@@ -331,7 +339,7 @@ main {
       }
 
       span {
-        width: 100%;
+        margin-right: 10 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
         color: rgb(163, 162, 162);
       }
