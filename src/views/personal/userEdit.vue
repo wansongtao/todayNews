@@ -1,9 +1,7 @@
 <template>
   <div class="edit_container">
-    <h4>
-      <router-link to="/personal"><i class="iconfont icondayu"></i></router-link
-      >编辑资料
-    </h4>
+    <head-title title="编辑资料" @back="$router.back();"></head-title>
+
     <div class="userimg">
       <img :src="head_img | imgUrl" alt="头像" v-if="head_img != ''" />
       <img src="../../assets/user.jpg" alt="头像" v-else />
@@ -102,6 +100,7 @@
 </template>
 
 <script>
+import headertitle from "../../components/headertitle";
 import personalList from "../../components/personalList";
 import AuthInput from "../../components/AuthInput";
 export default {
@@ -124,6 +123,7 @@ export default {
     };
   },
   components: {
+    "head-title": headertitle,
     "personal-list": personalList,
     "auth-input": AuthInput,
   },
