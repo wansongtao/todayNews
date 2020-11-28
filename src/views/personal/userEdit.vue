@@ -271,20 +271,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-h4 {
-  text-align: center;
-  font-size: 16 / 360 * 100vw;
-  line-height: 40 / 360 * 100vw;
-  color: rgb(126, 122, 122);
-
-  i {
-    position: absolute;
-    top: 0;
-    left: 15 / 360 * 100vw;
-    font-size: 16 / 360 * 100vw;
-  }
-}
-
 .userimg {
   position: relative;
   // margin: 20 / 360 * 100vw;
