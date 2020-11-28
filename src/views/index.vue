@@ -33,9 +33,8 @@
           >
             {{ item.categoryName }}
           </li>
-
-          <li><span class="iconfont iconjia"></span></li>
         </ul>
+        <div class="addcategory"><span class="iconfont iconjia"></span></div>
       </div>
     </header>
     <main>
@@ -186,7 +185,7 @@ export default {
     this.$axios.get("/category").then((res) => {
       let categoryArr = [];
 
-      categoryArr = res.data.data.category.slice(0, 6);
+      categoryArr = res.data.data.category.slice(0, 10);
 
       this.postContent = categoryArr.map((item) => {
         return {
@@ -295,18 +294,39 @@ header {
   }
 
   .top_menu_list {
+    position: relative;
     background: #e4e4e4;
 
     ul {
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
+      overflow-x: auto;
+      margin-right: 40 / 360 * 100vw;
+      white-space: nowrap;
       font-size: 16 / 360 * 100vw;
       line-height: 30 / 360 * 100vw;
 
-      li span {
+      //不显示滚动条
+      &::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+      }
+
+      li {
+        display: inline-block;
+        padding: 0 8 / 360 * 100vw;
+      }
+    }
+
+    .addcategory {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #e4e4e4;
+      padding: 0 8 / 360 * 100vw;
+      box-shadow: -1px 0px 2px 1px rgba(139, 138, 138, 0.2);
+      span {
         font-size: 20 / 360 * 100vw;
         color: #d43d3d;
+        line-height: 30 / 360 * 100vw;
       }
     }
   }
