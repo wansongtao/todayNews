@@ -46,23 +46,12 @@
           finished-text="我也是有底线的~"
           @load="LoadNews"
         >
-          <div
+          <news-list
             v-for="(item, index) in postContent[currentIndex].newList"
+            :newsData="item"
             :key="index + 'newlist'"
-            class="article"
-            @click="jumpPage(item.newsId)"
-          >
-            <div class="article_left">
-              <p>{{ item.newsTitle }}</p>
-              <span>{{item.nickName}}</span>
-              <span>评论 {{ item.commentNums || 0 }}</span>
-            </div>
-
-            <div class="article_right">
-              <img src="../assets/user.jpg" alt="新闻封面" v-if="item.newsCover === ''">
-              <img :src="item.newsCover | imgUrl" :alt="item.newsTitle" v-else/>
-            </div>
-          </div>
+            @click.native="jumpPage(item.newsId)"
+          ></news-list>
         </van-list>
       </article>
     </main>
@@ -70,7 +59,12 @@
 </template>
 
 <script>
+import articleList from "../components/articleList";
+
 export default {
+  components: {
+    "news-list": articleList,
+  },
   data() {
     return {
       currentIndex: 0,
@@ -81,7 +75,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -98,7 +92,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -115,7 +109,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -132,7 +126,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -149,7 +143,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -166,7 +160,7 @@ export default {
           newList: [
             {
               newsId: 1,
-              nickName: '梅花日报',
+              nickName: "梅花日报",
               newsTitle: "阿信发文谈与周杰伦合作",
               newsCover: "",
               commentNums: 12,
@@ -251,6 +245,9 @@ export default {
       //跳转并传参
       this.$router.push({ name: "NewDetails", params: { id: id } });
     },
+    /**
+     * @description 滚动到页面底部时加载更多新闻
+     */
     LoadNews() {
       this.postContent[this.currentIndex].currentPage += 1;
 
@@ -341,36 +338,5 @@ main {
   width: 100%;
   margin-top: 64 / 360 * 100vw;
   padding: 20 / 360 * 100vw 10 / 360 * 100vw;
-
-  .article {
-    display: flex;
-    padding: 10 / 360 * 100vw 0;
-    border-bottom: 1px solid rgb(149, 147, 147);
-
-    .article_left {
-      display: flex;
-      flex-wrap: wrap;
-      align-content: space-between;
-      justify-items: center;
-      flex: 6;
-      p {
-        width: 100%;
-        font-size: 16 / 360 * 100vw;
-      }
-
-      span {
-        margin-right: 10 / 360 * 100vw;
-        font-size: 14 / 360 * 100vw;
-        color: rgb(163, 162, 162);
-      }
-    }
-
-    .article_right {
-      flex: 4;
-      img {
-        width: 100%;
-      }
-    }
-  }
 }
 </style>
