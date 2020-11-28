@@ -34,7 +34,7 @@
             {{ item.categoryName }}
           </li>
         </ul>
-        <div class="addcategory"><span class="iconfont iconjia"></span></div>
+        <div class="addcategory" @click="$router.push('/category')"><span class="iconfont iconjia"></span></div>
       </div>
     </header>
     <main>

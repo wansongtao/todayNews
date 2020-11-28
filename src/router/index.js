@@ -10,6 +10,7 @@ import userEdit from '../views/personal/userEdit';
 import collect from '../views/personal/collect';
 import commentList from '../views/personal/commentList';
 import attention from '../views/personal/attention';
+import category from '../views/category';
 
 Vue.use(VueRouter);
 
@@ -62,7 +63,12 @@ const routes = [
   {
     path: '/search',
     name: 'Search',
-    component: Search
+    component: Search,
+  },
+  {
+    path: '/category',
+    name: 'Category',
+    component: category
   }
 ];
 
