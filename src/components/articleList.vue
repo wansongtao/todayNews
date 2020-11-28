@@ -22,6 +22,9 @@ export default {
     // props: ['newsData']
     props: {
         newsData: {
+            /**
+             * @description 传入的newsData对象必须要包含newsTitle和nickName属性
+             */
             validator(value) {
                 let {newsTitle, nickName} = value;
 
