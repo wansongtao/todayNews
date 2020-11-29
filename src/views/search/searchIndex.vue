@@ -66,7 +66,7 @@
 
     <!-- 搜索框 -->
     <div class="searchbox">
-      <div class="swipebox">
+      <div class="swipebox" @click="$router.push('/search')">
         <van-swipe
           class="swipeitemhg"
           vertical
@@ -81,7 +81,7 @@
           </template>
         </van-swipe>
       </div>
-      <div class="searchbtn iconfont iconsousuo" @click="searchNews"></div>
+      <div class="searchbtn iconfont iconsousuo" @click="jumpSearchDetails"></div>
     </div>
 
     <div class="title">
@@ -89,35 +89,11 @@
         >热门推荐</van-divider
       >
     </div>
-
-    <main v-if="isShow">
-      <article>
-        <van-list
-          v-model="loading"
-          :immediate-check="false"
-          :finished="finished"
-          finished-text="我也是有底线的~"
-          @load="LoadNews"
-        >
-          <news-list
-            v-for="(item, index) in newsList"
-            :newsData="item"
-            :key="index + 'searchnewslist'"
-            @click.native="jumpPage(item.newsId)"
-          ></news-list>
-        </van-list>
-      </article>
-    </main>
   </div>
 </template>
 
 <script>
-import articleList from "../components/articleList";
-
 export default {
-  components: {
-    "news-list": articleList,
-  },
   data() {
     return {
       hotNews: [
@@ -126,12 +102,6 @@ export default {
         { newsTitle: "浮生若梦" },
       ],
       currIndex: 0,
-      isShow: false,
-      newsList: [],
-      loading: false,
-      finished: false,
-      currentPage: 0,
-      pageSize: 10
     };
   },
   created() {
@@ -145,42 +115,10 @@ export default {
     onChange(index) {
       this.currIndex = index;
     },
-    searchNews() {
-      this.$axios
-        .get("/searchnews", {
-          params: {
-            keyword: this.hotNews[this.currIndex].newsTitle,
-            currentPage: this.currentPage,
-            pageSize: this.pageSize
-          },
-        })
-        .then((res) => {
-          if(res.data.statusCode == 200) {
-              let data = res.data.data.newsList;
-
-              this.isShow = true;
-              this.loading = false;
-              this.newsList = data;
-
-              if(data.length < this.pageSize) {
-                  this.finished = true;
-              }
-          }
-        });
+    jumpSearchDetails() {
+      this.$router.push('/searchdetails?keyword=' + this.hotNews[this.currIndex].newsTitle);
     },
-    LoadNews() {
-        this.currentPage += 1;
-
-        this.searchNews();
-    },
-    /**
-     * @description 跳转到新闻详情
-     * @param {number} id 新闻id
-     */
-    jumpPage(id) {
-      //跳转并传参
-      this.$router.push({ name: "NewDetails", params: { id: id } });
-    },
+    
   },
 };
 </script>
@@ -188,7 +126,7 @@ export default {
 <style lang="less" scoped>
 .search_container {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   background: #fff;
 }
 

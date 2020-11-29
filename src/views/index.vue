@@ -17,7 +17,7 @@
         </div>
         <!-- 搜索按钮 -->
         <div class="top_bar_r">
-          <router-link to="/search">
+          <router-link to="/searchindex">
             <span class="iconfont iconsousuo"></span>
           </router-link>
         </div>

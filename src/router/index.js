@@ -5,12 +5,14 @@ import Login from '../views/Login';
 import Register from '../views/Register';
 import NewDetails from '../views/NewDetails';
 import Personal from '../views/personal/Personal';
-import Search from '../views/Search';
+import searchIndex from '../views/search/searchIndex';
 import userEdit from '../views/personal/userEdit';
 import collect from '../views/personal/collect';
 import commentList from '../views/personal/commentList';
 import attention from '../views/personal/attention';
 import category from '../views/category';
+import searchDetails from '../views/search/searchDetails';
+import search from '../views/search/search';
 
 Vue.use(VueRouter);
 
@@ -61,14 +63,24 @@ const routes = [
     component: attention
   },
   {
-    path: '/search',
-    name: 'Search',
-    component: Search,
+    path: '/searchindex',
+    name: 'searchIndex',
+    component: searchIndex,
   },
   {
     path: '/category',
     name: 'Category',
     component: category
+  },
+  {
+    path: '/searchdetails',
+    name: 'searchDetails',
+    component: searchDetails
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: search
   }
 ];
 
