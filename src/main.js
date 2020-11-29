@@ -23,7 +23,10 @@ import { Uploader } from 'vant';
 
 import { ActionSheet } from 'vant';
 import { List } from 'vant';
-// import { PullRefresh } from 'vant';
+import { Swipe, SwipeItem } from 'vant';
+import { Divider } from 'vant';
+
+Vue.use(Divider);
 
 //注册vant ui组件库的标签
 // Vue.use(Vant);
@@ -36,7 +39,8 @@ Vue.use(Dialog);
 Vue.use(Uploader);
 Vue.use(ActionSheet);
 Vue.use(List);
-// Vue.use(PullRefresh);
+Vue.use(Swipe);
+Vue.use(SwipeItem);
 
 // import 'vant/lib/toast/style';
 // import 'vant/lib/dialog/style';
