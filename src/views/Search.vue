@@ -64,41 +64,124 @@
       </svg>
     </div>
 
+    <!-- 搜索框 -->
     <div class="searchbox">
       <div class="swipebox">
-        <van-swipe class="swipeitemhg" vertical autoplay="1800" :show-indicators="false">
+        <van-swipe
+          class="swipeitemhg"
+          vertical
+          autoplay="1800"
+          :show-indicators="false"
+          @change="onChange"
+        >
           <template v-for="(item, index) in hotNews">
-              <van-swipe-item :key="index + 'swipeitem'"><p>{{item.newsTitle}}</p></van-swipe-item>
+            <van-swipe-item :key="index + 'swipeitem'"
+              ><p>{{ item.newsTitle }}</p></van-swipe-item
+            >
           </template>
         </van-swipe>
       </div>
-      <div class="searchbtn iconfont iconsousuo"></div>
+      <div class="searchbtn iconfont iconsousuo" @click="searchNews"></div>
     </div>
 
     <div class="title">
-        <van-divider :style="{ padding: '0 20px', fontSize: '14px'}">热门推荐</van-divider>
+      <van-divider :style="{ padding: '0 20px', marginBottom: '0px', fontSize: '14px' }"
+        >热门推荐</van-divider
+      >
     </div>
+
+    <main v-if="isShow">
+      <article>
+        <van-list
+          v-model="loading"
+          :immediate-check="false"
+          :finished="finished"
+          finished-text="我也是有底线的~"
+          @load="LoadNews"
+        >
+          <news-list
+            v-for="(item, index) in newsList"
+            :newsData="item"
+            :key="index + 'searchnewslist'"
+            @click.native="jumpPage(item.newsId)"
+          ></news-list>
+        </van-list>
+      </article>
+    </main>
   </div>
 </template>
 
 <script>
+import articleList from "../components/articleList";
+
 export default {
-    data() {
-        return {
-            hotNews: [
-                {newsTitle: '大梦一场空'},
-                {newsTitle: '孤影照惊鸿'},
-                {newsTitle: '浮生若梦'}
-            ]
-        }
+  components: {
+    "news-list": articleList,
+  },
+  data() {
+    return {
+      hotNews: [
+        { newsTitle: "大梦一场空" },
+        { newsTitle: "孤影照惊鸿" },
+        { newsTitle: "浮生若梦" },
+      ],
+      currIndex: 0,
+      isShow: false,
+      newsList: [],
+      loading: false,
+      finished: false,
+      currentPage: 0,
+      pageSize: 10
+    };
+  },
+  created() {
+    this.$axios.get("/hotnews").then((res) => {
+      if (res.data.statusCode == 200) {
+        this.hotNews = res.data.data.hotNews;
+      }
+    });
+  },
+  methods: {
+    onChange(index) {
+      this.currIndex = index;
     },
-    created() {
-        this.$axios.get('/hotnews').then(res => {
-            if(res.data.statusCode == 200) {
-                this.hotNews = res.data.data.hotNews;
-            }
+    searchNews() {
+      this.$axios
+        .get("/searchnews", {
+          params: {
+            keyword: this.hotNews[this.currIndex].newsTitle,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize
+          },
+        })
+        .then((res) => {
+          if(res.data.statusCode == 200) {
+              let data = res.data.data.newsList;
+
+              this.isShow = true;
+              this.loading = false;
+              this.newsList = data;
+
+              if(data.length < this.pageSize) {
+                  this.finished = true;
+              }
+          }
         });
-    }
+    },
+    LoadNews() {
+        this.currentPage += 1;
+
+        this.searchNews();
+    },
+    /**
+     * @description 跳转到新闻详情
+     * @param {number} id 新闻id
+     */
+    jumpPage(id) {
+      //跳转并传参
+      this.$router.push({ name: "NewDetails", params: { id: id } });
+    },
+  },
 };
 </script>
 
@@ -152,15 +235,15 @@ export default {
     padding-left: 15 / 360 * 100vw;
 
     .swipeitemhg {
-        height: 45 / 360 * 100vw;
-        line-height: 45 / 360 * 100vw;
-        font-size: 14 / 360 * 100vw;
-        color: #707070;
-        p {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+      height: 45 / 360 * 100vw;
+      line-height: 45 / 360 * 100vw;
+      font-size: 14 / 360 * 100vw;
+      color: #707070;
+      p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
@@ -176,5 +259,11 @@ export default {
     line-height: 45 / 360 * 100vw;
     font-size: 16 / 360 * 100vw;
   }
+}
+
+main {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 10 / 360 * 100vw;
 }
 </style>
