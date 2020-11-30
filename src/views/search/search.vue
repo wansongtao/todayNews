@@ -67,14 +67,15 @@
         <li
           v-for="(item, index) in searchHistory"
           :key="index + 'searchHistory'"
-          @click.self="search(item)"
         >
-          {{ item }}
-          <i
-            class="iconfont iconx"
-            v-show="isShow.clearHistoryBtn === false"
-            @click.stop="clearOneHistory(index)"
-          ></i>
+          <p @click.self="search(item)">
+            {{ item }}
+            <i
+              class="iconfont iconx"
+              v-show="isShow.clearHistoryBtn === false"
+              @click.stop="clearOneHistory(index)"
+            ></i>
+          </p>
         </li>
       </ul>
     </div>
@@ -137,7 +138,7 @@ export default {
     }
 
     if (history instanceof Array) {
-      this.searchHistory = history;
+      this.searchHistory = history.slice(0, 6);
     }
 
     //猜你想搜列表
@@ -191,13 +192,21 @@ export default {
       this.$router.push("/searchdetails?keyword=" + item);
     },
     getKeyword() {
+      let history = [];
+
+      if(localStorage.searchHistory) {
+        history = JSON.parse(localStorage.searchHistory);
+      }
+
       if (this.keyword.length > 0) {
+        history.unshift(this.keyword);   
         this.search(this.keyword);
       } else {
         let item = this.hotNews[this.currIndex].newsTitle;
-
+        history.unshift(item);   
         this.search(item);
       }
+      localStorage.searchHistory = JSON.stringify(history);
     },
     clearAllHistory() {
       this.searchHistory = [];
@@ -346,16 +355,27 @@ header {
     height: 30 / 360 * 100vw;
     font-size: 14 / 360 * 100vw;
     line-height: 30 / 360 * 100vw;
-    box-sizing: border-box;
+    
+    p {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 100%;
+      padding-right: 15 / 360 * 100vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
-    i {
-      float: right;
-      width: 30 / 360 * 100vw;
-      text-align: center;
-      font-size: 12 / 360 * 100vw;
-      line-height: 30 / 360 * 100vw;
-      color: #cacaca;
+      i {
+        float: right;
+        width: 30 / 360 * 100vw;
+        text-align: center;
+        font-size: 12 / 360 * 100vw;
+        line-height: 30 / 360 * 100vw;
+        color: #cacaca;
+      }
     }
+
+    
   }
 }
 
