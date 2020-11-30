@@ -21,7 +21,7 @@ export default {
 
 <style>
 /* @import url('../public/css/base.css'); */
-@import url("//at.alicdn.com/t/font_2210025_4bwpk03fab6.css");
+@import url("//at.alicdn.com/t/font_2210025_hv12edkmj9d.css");
 
 * {
   margin: 0;

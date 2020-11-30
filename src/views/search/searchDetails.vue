@@ -24,7 +24,7 @@
         </div>
 
         <div class="searchinput">
-          <input ref="searchInput" type="text" v-model="keyword" @input="$router.push('/search');" key="searchDetails"/>
+          <input ref="searchInput" type="text" v-model="keyword" @focus="$router.push('/search?keyword=' + keyword);" key="searchDetails"/>
           <span
             class="iconfont iconguanbi"
             v-show="isShowCloseBtn"

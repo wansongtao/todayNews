@@ -1,12 +1,14 @@
 <template>
   <div class="searchcontainer">
     <header>
-      <!-- 搜索框 -->
+      <!-- 头部搜索框 -->
       <div class="searchbox">
+        <!-- 搜索logo -->
         <div class="searchlogo">
           <span class="iconfont iconsousuo"></span>
         </div>
 
+        <!-- 滚动列表 -->
         <div class="swipebox" v-if="isShow.swipe">
           <van-swipe
             class="swipeitemhg"
@@ -23,11 +25,12 @@
           </van-swipe>
         </div>
 
+        <!-- 搜索输入框 -->
         <div class="searchinput">
           <input
             ref="searchInput"
             type="text"
-            v-model="keyword"
+            :value="keyword"
             v-focus
             @input="searchInput"
           />
@@ -38,64 +41,83 @@
           ></span>
         </div>
 
+        <!-- 搜索按钮 -->
         <div class="searchbtn" @click="getKeyword">
           <span>搜索</span>
         </div>
       </div>
     </header>
 
-    <!-- 历史记录 -->
-    <div v-if="searchHistory.length > 0">
-      <h6 class="historytitle">
-        历史记录
-        <i
-          class="iconfont iconhuishouzhan"
-          v-show="isShow.clearHistoryBtn"
-          @click="isShow.clearHistoryBtn = false"
-        ></i>
-        <span
-          v-show="isShow.clearHistoryBtn === false"
-          @click="isShow.clearHistoryBtn = true"
-          >完成</span
-        >
-        <span v-show="isShow.clearHistoryBtn === false" @click="clearAllHistory"
-          >全部删除</span
-        >
-      </h6>
-
-      <ul class="searchHistory">
-        <li
-          v-for="(item, index) in searchHistory"
-          :key="index + 'searchHistory'"
-        >
-          <p @click.self="search(item)">
-            {{ item }}
+    <main>
+      <!-- 用户没有输入任何内容时，显示历史记录与猜你想搜 -->
+      <div v-show="keyword.length === 0">
+        <!-- 历史记录 -->
+        <div v-if="searchHistory.length > 0">
+          <h6 class="historytitle">
+            历史记录
             <i
-              class="iconfont iconx"
-              v-show="isShow.clearHistoryBtn === false"
-              @click.stop="clearOneHistory(index)"
+              class="iconfont iconhuishouzhan"
+              v-show="isShow.clearHistoryBtn"
+              @click="isShow.clearHistoryBtn = false"
             ></i>
-          </p>
-        </li>
-      </ul>
-    </div>
+            <span
+              v-show="isShow.clearHistoryBtn === false"
+              @click="isShow.clearHistoryBtn = true"
+              >完成</span
+            >
+            <span
+              v-show="isShow.clearHistoryBtn === false"
+              @click="clearAllHistory"
+              >全部删除</span
+            >
+          </h6>
 
-    <!-- 猜你想搜 -->
-    <div>
-      <h6 class="historytitle">猜你想搜</h6>
+          <ul class="searchHistory">
+            <li
+              v-for="(item, index) in searchHistory"
+              :key="index + 'searchHistory'"
+            >
+              <p @click.self="search(item)">
+                {{ item }}
+              </p>
+              <i
+                class="iconfont iconx"
+                v-show="isShow.clearHistoryBtn === false"
+                @click.stop="clearOneHistory(index)"
+              ></i>
+            </li>
+          </ul>
+        </div>
 
-      <ul class="guess">
-        <li
-          v-for="(item, index) in guessNews"
-          :key="index + 'guessNews'"
-        >
-          <p class="guesstext" @click.self="search(item.newsTitle)">
-            {{ item.newsTitle}}
-            <i class="iconfont iconjian" v-if="index == 0"></i>
-          </p>
-        </li>
-      </ul>
-    </div>
+        <!-- 猜你想搜 -->
+        <div>
+          <h6 class="historytitle">猜你想搜</h6>
+
+          <ul class="guess">
+            <li v-for="(item, index) in guessNews" :key="index + 'guessNews'">
+              <p class="guesstext" @click.self="search(item.newsTitle)">
+                {{ item.newsTitle }}
+                <i class="iconfont iconjian" v-if="index == 0"></i>
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="beforeSearch" v-show="maybeNews.length > 0">
+        <ul>
+          <li v-for="(item, index) in maybeNews" :key="'maybeNews' + index">
+            <router-link :to="'/searchdetails?keyword=' + item.newsTitle">
+              <p>
+                <i class="iconfont iconsousuo"></i>
+                {{ item.newsTitle }}
+                <span class="iconfont iconjiantou-zuoshang"></span>
+              </p>
+            </router-link>
+          </li>
+        </ul>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -121,9 +143,21 @@ export default {
         { newsTitle: "孤影照惊鸿" },
         { newsTitle: "浮生若梦" },
       ],
+      maybeNews: [],
     };
   },
   created() {
+    if (this.$route.query.keyword !== undefined && this.$route.query.keyword != '') {
+      this.keyword = this.$route.query.keyword;
+
+      //输入框有内容时，显示清除按钮，隐藏滚动列表
+      this.isShow.clearSearch = true;
+      this.isShow.swipe = false;
+
+      //预查询
+      this.beforeSearch(this.keyword);
+    }
+
     //滚动列表
     this.$axios.get("/hotnews").then((res) => {
       if (res.data.statusCode == 200) {
@@ -138,7 +172,7 @@ export default {
     }
 
     if (history instanceof Array) {
-      this.searchHistory = history.slice(0, 6);
+      this.searchHistory = history.slice(0, 7);
     }
 
     //猜你想搜列表
@@ -155,19 +189,6 @@ export default {
         }
       });
   },
-  watch: {
-    keyword() {
-      if (this.keyword.length > 0) {
-        //当用户输入搜索内容时，显示清除按钮并隐藏滚动列表
-        this.isShow.clearSearch = true;
-        this.isShow.swipe = false;
-      } else {
-        //用户没有输入任何内容时，隐藏清除按钮并显示滚动列表
-        this.isShow.clearSearch = false;
-        this.isShow.swipe = true;
-      }
-    },
-  },
   directives: {
     focus: {
       inserted(el) {
@@ -183,30 +204,53 @@ export default {
       this.keyword = "";
       this.$refs.searchInput.focus();
     },
-    searchInput() {
-      //当用户输入搜索内容时，显示清除按钮并隐藏滚动列表
-      this.isShow.clearSearch = true;
-      this.isShow.swipe = false;
+    searchInput(e) {
+      this.keyword = e.target.value;
+
+      if (this.keyword.length > 0) {
+        //预查询
+        this.beforeSearch(e.target.value);
+
+        //当用户输入搜索内容时，显示清除按钮并隐藏滚动列表
+        this.isShow.clearSearch = true;
+        this.isShow.swipe = false;
+      } else {
+        //用户没有输入任何内容时，隐藏清除按钮并显示滚动列表
+        this.isShow.clearSearch = false;
+        this.isShow.swipe = true;
+        this.maybeNews = [];
+      }
     },
     search(item) {
       this.$router.push("/searchdetails?keyword=" + item);
     },
     getKeyword() {
+      //当用户点击搜索按钮时，获取关键字并存入历史记录
       let history = [];
 
-      if(localStorage.searchHistory) {
+      if (localStorage.searchHistory) {
         history = JSON.parse(localStorage.searchHistory);
+
+        if (!(history instanceof Array)) {
+          history = [];
+        }
       }
 
       if (this.keyword.length > 0) {
-        history.unshift(this.keyword);   
+        history.unshift(this.keyword);
+
         this.search(this.keyword);
       } else {
         let item = this.hotNews[this.currIndex].newsTitle;
-        history.unshift(item);   
+        history.unshift(item);
+
         this.search(item);
       }
-      localStorage.searchHistory = JSON.stringify(history);
+
+      //去除重复的历史记录，最多保存七条历史记录
+      let historys = new Set(history);
+      history = Array.from(historys);
+      localStorage.searchHistory = JSON.stringify(history.slice(0, 7));
     },
     clearAllHistory() {
       this.searchHistory = [];
@@ -216,6 +260,20 @@ export default {
       this.searchHistory.splice(index, 1);
 
       localStorage.searchHistory = JSON.stringify(this.searchHistory);
+    },
+    beforeSearch(keyword) {
+      //预查询
+      this.$axios
+        .get("/beforesearch", {
+          params: {
+            keyword,
+          },
+        })
+        .then((res) => {
+          if (res.data.statusCode == 200) {
+            this.maybeNews = res.data.data.maybeNews;
+          }
+        });
     },
   },
 };
@@ -355,27 +413,24 @@ header {
     height: 30 / 360 * 100vw;
     font-size: 14 / 360 * 100vw;
     line-height: 30 / 360 * 100vw;
-    
+
     p {
       display: inline-block;
       box-sizing: border-box;
-      width: 100%;
+      width: calc(100% - 30 / 360 * 100vw);
       padding-right: 15 / 360 * 100vw;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-
-      i {
-        float: right;
-        width: 30 / 360 * 100vw;
-        text-align: center;
-        font-size: 12 / 360 * 100vw;
-        line-height: 30 / 360 * 100vw;
-        color: #cacaca;
-      }
     }
 
-    
+    i {
+      float: right;
+      width: 30 / 360 * 100vw;
+      font-size: 12 / 360 * 100vw;
+      line-height: 30 / 360 * 100vw;
+      color: #cacaca;
+    }
   }
 }
 
@@ -404,6 +459,51 @@ header {
         color: #4a90e2;
         font-size: 14 / 360 * 100vw;
         line-height: 30 / 360 * 100vw;
+      }
+    }
+  }
+}
+
+.beforeSearch {
+  padding: 0 15 / 360 * 100vw;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      border-bottom: 1px solid #f1efef;
+
+      a {
+        display: block;
+        height: 40 / 360 * 100vw;
+        margin: 0;
+        padding: 0;
+        line-height: 40 / 360 * 100vw;
+        font-size: 14 / 360 * 100vw;
+        color: #999999;
+
+        p {
+          position: relative;
+          padding-right: 30 / 360 * 100vw;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          i {
+            line-height: 40 / 360 * 100vw;
+            font-size: 14 / 360 * 100vw;
+          }
+
+          span {
+            position: absolute;
+            top: 0;
+            right: 0;
+            line-height: 40 / 360 * 100vw;
+            font-size: 18 / 360 * 100vw;
+            color: #000;
+          }
+        }
       }
     }
   }
