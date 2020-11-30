@@ -24,7 +24,7 @@
         </div>
 
         <div class="searchinput">
-          <input ref="searchInput" type="text" v-model="keyword" />
+          <input ref="searchInput" type="text" v-model="keyword" @input="$router.push('/search');" key="searchDetails"/>
           <span
             class="iconfont iconguanbi"
             v-show="isShowCloseBtn"
@@ -40,7 +40,7 @@
 
     <div class="title">
       <van-divider
-        :style="{ padding: '0 20px', marginBottom: '0px', fontSize: '14px' }"
+        :style="{ padding: '0 20px', margin: '5px 0px', fontSize: '14px' }"
         >搜索结果</van-divider
       >
     </div>
@@ -105,9 +105,10 @@ export default {
   watch: {
     keyword() {
       if (this.keyword.length > 0) {
-        //当用户输入搜索内容时，显示清除按钮并隐藏滚动列表
+        //当搜索框有内容时，显示清除按钮并隐藏滚动列表
         this.isShowCloseBtn = true;
         this.isShowSwipe = false;
+
       } else {
         //用户没有输入任何内容时，隐藏清除按钮并显示滚动列表
         this.isShowCloseBtn = false;
@@ -184,8 +185,7 @@ header {
   padding: 15 / 360 * 100vw 15 / 360 * 100vw;
   .searchbox {
     position: relative;
-    // width: calc(100% - 30 / 360 * 100vw);
-    height: 45 / 360 * 100vw;
+    height: 35 / 360 * 100vw;
     border: 2px solid #3d404d;
     border-radius: 10 / 360 * 100vw;
 
@@ -195,7 +195,7 @@ header {
       left: 0;
       width: 30 / 360 * 100vw;
       text-align: center;
-      line-height: 45 / 360 * 100vw;
+      line-height: 35 / 360 * 100vw;
       span {
         font-size: 16 / 360 * 100vw;
         color: #000;
@@ -205,12 +205,12 @@ header {
     .swipebox {
       box-sizing: border-box;
       width: calc(100vw - 70 / 360 * 100vw);
-      height: 45 / 360 * 100vw;
+      height: 35 / 360 * 100vw;
       padding-left: 30 / 360 * 100vw;
 
       .swipeitemhg {
-        height: 45 / 360 * 100vw;
-        line-height: 45 / 360 * 100vw;
+        height: 35 / 360 * 100vw;
+        line-height: 35 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
         color: #707070;
         p {
@@ -230,9 +230,9 @@ header {
       input {
         box-sizing: border-box;
         width: 100%;
-        height: 45 / 360 * 100vw;
+        height: 35 / 360 * 100vw;
         padding-right: 20 / 360 * 100vw;
-        line-height: 45 / 360 * 100vw;
+        line-height: 35 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
         border: none;
         background: rgba(255, 255, 255, 0);
@@ -247,7 +247,7 @@ header {
         right: 0;
         width: 20 / 360 * 100vw;
         text-align: center;
-        line-height: 45 / 360 * 100vw;
+        line-height: 35 / 360 * 100vw;
         font-size: 16 / 360 * 100vw;
         color: #cacaca;
       }
@@ -260,7 +260,7 @@ header {
       right: 0;
       width: 50 / 360 * 100vw;
       height: 21 / 360 * 100vw;
-      margin: 13 / 360 * 100vw 5 / 360 * 100vw;
+      margin: 7 / 360 * 100vw 5 / 360 * 100vw;
       border-left: 1px solid #eee;
       text-align: center;
 

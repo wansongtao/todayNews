@@ -21,7 +21,7 @@ export default {
 
 <style>
 /* @import url('../public/css/base.css'); */
-@import url("//at.alicdn.com/t/font_2210025_59skherfk97.css");
+@import url("//at.alicdn.com/t/font_2210025_4bwpk03fab6.css");
 
 * {
   margin: 0;
@@ -41,6 +41,7 @@ html,body {
 #app {
   width: 100%;
   margin: 0 auto;
+  font-family: "KaiTi", "SongTi", Arial, sans-serif;
 }
 
 a {
