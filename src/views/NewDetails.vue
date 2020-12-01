@@ -6,8 +6,11 @@
         <i class="iconfont icondayu"></i>
         <span class="iconfont iconnew"></span>
       </div>
-      <div :class="['follow_btn', isFollow === true ? 'follow' : 'nofollow']" @click="following">
-        {{isFollow === true ? '已关注' : '关注'}}
+      <div
+        :class="['follow_btn', isFollow === true ? 'follow' : 'nofollow']"
+        @click="following"
+      >
+        {{ isFollow === true ? "已关注" : "关注" }}
       </div>
     </header>
     <!-- 新闻内容 -->
@@ -15,12 +18,22 @@
       <article>
         <h4>{{ newDetails.newsTitle }}</h4>
         <p>
-          {{ newDetails.nickName }}<span>{{ newDetails.newsDate.substr(0, 10) }}</span>
+          {{ newDetails.nickName
+          }}<span>{{ newDetails.newsDate.substr(0, 10) }}</span>
         </p>
         <div class="content" v-html="newDetails.newsContent"></div>
       </article>
       <div class="article_btn">
-        <div><span class="iconfont iconzan"></span>{{newDetails.newsHot || 0}}</div>
+        <div @click="like">
+          <span
+            :class="[
+              'iconfont',
+              isLike === true ? 'icondianzan like' : 'iconzan',
+            ]"
+          >
+          </span>
+          {{ newDetails.newsHot || 0 }}
+        </div>
         <div><span class="iconfont iconcai1"></span>10</div>
       </div>
     </main>
@@ -70,55 +83,86 @@ export default {
         newsHot: 11,
         newsDate: "2020-11-11",
       },
-      isFollow: false
+      isFollow: false,
+      isLike: false,
     };
   },
   created() {
-    this.$axios.get('/getnewcontent', {
-      params: {
-        newsId: this.$route.params.id
-      }
-    })
-    .then(res => {
-      if (res.data.statusCode == 200) {
-        let data = res.data.data;
-        this.newDetails = data.newDetails;
-        this.isFollow = data.isFollow;
-      }
-    });
+    this.$axios
+      .get("/getnewcontent", {
+        params: {
+          newsId: this.$route.params.id,
+        },
+      })
+      .then((res) => {
+        if (res.data.statusCode == 200) {
+          let data = res.data.data;
+          this.newDetails = data.newDetails;
+          this.isFollow = data.isFollow;
+          this.isLike = data.isLike;
+        }
+      });
   },
   methods: {
     following() {
       if (!this.isFollow) {
         //关注
-        this.$axios.get('/following', {
-          params: {
-            followUserId: this.newDetails.userId
-          }
-        })
-        .then(res => {
-          if (res.data.statusCode == 200) {
-            this.isFollow = !this.isFollow;
+        this.$axios
+          .get("/following", {
+            params: {
+              followUserId: this.newDetails.userId,
+            },
+          })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.isFollow = !this.isFollow;
 
-            this.$toast.success(res.data.message || '关注成功');
-          }
-        });
-      }
-      else {
+              this.$toast.success(res.data.message || "关注成功");
+            }
+          });
+      } else {
         //取消关注
-        this.$axios.get('/unfollow', {
-          params: {followUserId: this.newDetails.userId}
-        })
-        .then(res => {
-          if (res.data.statusCode == 200) {
-            this.isFollow = !this.isFollow;
+        this.$axios
+          .get("/unfollow", {
+            params: { followUserId: this.newDetails.userId },
+          })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.isFollow = !this.isFollow;
 
-            this.$toast.success(res.data.message || '取消关注成功');
-          }
-        })
+              this.$toast.success(res.data.message || "取消关注成功");
+            }
+          });
       }
-    }
-  }
+    },
+    like() {
+      if (!this.isLike) {
+        //点赞
+        this.$axios
+          .get("/like", {
+            params: { newsId: this.newDetails.newsId },
+          })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.isLike = true;
+              this.newDetails.newsHot++;
+            }
+          });
+      } else {
+        //取消点赞
+        this.$axios
+          .get("/unlike", {
+            params: { newsId: this.newDetails.newsId },
+          })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.isLike = false;
+              this.newDetails.newsHot--;
+            }
+          });
+      }
+    },
+  },
 };
 </script>
 
@@ -159,7 +203,7 @@ header {
     font-size: 12 / 360 * 100vw;
     line-height: 20 / 360 * 100vw;
     border: 1px solid rgb(206, 205, 205);
-    border-radius: 10 / 360 * 100vw; 
+    border-radius: 10 / 360 * 100vw;
   }
 
   .nofollow {
@@ -180,6 +224,7 @@ main {
     font-size: 18 / 360 * 100vw;
     line-height: 30 / 360 * 100vw;
   }
+
   p {
     font-size: 14 / 360 * 100vw;
     color: rgb(167, 165, 165);
@@ -187,6 +232,7 @@ main {
       margin-left: 20 / 360 * 100vw;
     }
   }
+
   .content {
     margin: 20 / 360 * 100vw 0;
 
@@ -229,6 +275,10 @@ main {
         margin-right: 10 / 360 * 100vw;
         font-size: 16 / 360 * 100vw;
       }
+    }
+
+    .like {
+      color: red;
     }
   }
 }
