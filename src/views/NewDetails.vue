@@ -2,28 +2,25 @@
   <div class="new_container">
     <!-- 头部返回和关注按钮 -->
     <header>
-      <div class="logo_btn">
-        <router-link to="/">
-          <i class="iconfont icondayu"></i>
-          <span class="iconfont iconnew"></span>
-        </router-link>
+      <div class="logo_btn" @click="$router.back()">
+        <i class="iconfont icondayu"></i>
+        <span class="iconfont iconnew"></span>
       </div>
-      <div class="follow_btn">关注</div>
+      <div :class="['follow_btn', isFollow === true ? 'follow' : 'nofollow']" @click="following">
+        {{isFollow === true ? '已关注' : '关注'}}
+      </div>
     </header>
     <!-- 新闻内容 -->
     <main>
       <article>
-        <h4>车主注意啦！9月下旬部分临时泊位进行清洁保养</h4>
-        <p>火星时报<span>2019-10-10</span></p>
-        <p class="content">
-          为营造临时泊位“干静、整洁、平安、有序”面貌迎国庆，市交通部
-          门拟在9月下旬对部分城市道路临时泊位进行清洁保养，请市民群
-          众配合在清洁保养期间将车辆驶离泊位。第一阶段临时泊位清洁
-          保养计划（涉及17条路段）。
+        <h4>{{ newDetails.newsTitle }}</h4>
+        <p>
+          {{ newDetails.nickName }}<span>{{ newDetails.newsDate.substr(0, 10) }}</span>
         </p>
+        <div class="content" v-html="newDetails.newsContent"></div>
       </article>
       <div class="article_btn">
-        <div><span class="iconfont iconzan"></span>112</div>
+        <div><span class="iconfont iconzan"></span>{{newDetails.newsHot || 0}}</div>
         <div><span class="iconfont iconcai1"></span>10</div>
       </div>
     </main>
@@ -64,16 +61,73 @@
 export default {
   data() {
     return {
-      test: 1,
+      newDetails: {
+        newsId: 10001,
+        userId: 1001,
+        nickName: "火气日报",
+        newsTitle: "我没胆量犯错，才把一切错过",
+        newsContent: "<div>...</div>",
+        newsHot: 11,
+        newsDate: "2020-11-11",
+      },
+      isFollow: false
     };
   },
   created() {
-    console.log(this.$route.params);
+    this.$axios.get('/getnewcontent', {
+      params: {
+        newsId: this.$route.params.id
+      }
+    })
+    .then(res => {
+      if (res.data.statusCode == 200) {
+        let data = res.data.data;
+        this.newDetails = data.newDetails;
+        this.isFollow = data.isFollow;
+      }
+    });
   },
+  methods: {
+    following() {
+      if (!this.isFollow) {
+        //关注
+        this.$axios.get('/following', {
+          params: {
+            followUserId: this.newDetails.userId
+          }
+        })
+        .then(res => {
+          if (res.data.statusCode == 200) {
+            this.isFollow = !this.isFollow;
+
+            this.$toast.success(res.data.message || '关注成功');
+          }
+        });
+      }
+      else {
+        //取消关注
+        this.$axios.get('/unfollow', {
+          params: {followUserId: this.newDetails.userId}
+        })
+        .then(res => {
+          if (res.data.statusCode == 200) {
+            this.isFollow = !this.isFollow;
+
+            this.$toast.success(res.data.message || '取消关注成功');
+          }
+        })
+      }
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
+.new_container {
+  min-height: 100vh;
+  background: #fff;
+}
+
 header {
   // position: fixed;
   // top: 0;
@@ -95,7 +149,6 @@ header {
     span {
       position: absolute;
       font-size: 48 / 360 * 100vw;
-      // line-height: 48 / 360 * 100vw;
     }
   }
 
@@ -105,10 +158,17 @@ header {
     text-align: center;
     font-size: 12 / 360 * 100vw;
     line-height: 20 / 360 * 100vw;
-    color: #fff;
     border: 1px solid rgb(206, 205, 205);
-    border-radius: 10 / 360 * 100vw;
+    border-radius: 10 / 360 * 100vw; 
+  }
+
+  .nofollow {
+    color: #fff;
     background: #ff0000;
+  }
+
+  .follow {
+    color: #000;
   }
 }
 
@@ -129,10 +189,28 @@ main {
   }
   .content {
     margin: 20 / 360 * 100vw 0;
-    text-indent: 2em;
-    color: #000;
-    font-size: 14 / 360 * 100vw;
-    line-height: 20 / 360 * 100vw;
+
+    /deep/ p {
+      text-indent: 2em;
+      color: #000;
+      font-size: 14 / 360 * 100vw;
+      line-height: 20 / 360 * 100vw;
+    }
+
+    /deep/ h6 {
+      text-align: center;
+      color: #000;
+      font-size: 15 / 360 * 100vw;
+      line-height: 30 / 360 * 100vw;
+    }
+
+    /deep/ span {
+      display: inline-block;
+      width: 100%;
+      text-align: right;
+      font-size: 14 / 360 * 100vw;
+      line-height: 20 / 360 * 100vw;
+    }
   }
 
   .article_btn {
