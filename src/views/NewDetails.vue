@@ -68,8 +68,7 @@ export default {
     };
   },
   created() {
-    console.log(this.test);
-    console.log(this.$router.currentRoute.params);
+    console.log(this.$route.params);
   },
 };
 </script>

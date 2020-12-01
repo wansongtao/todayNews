@@ -34,7 +34,9 @@
             {{ item.categoryName }}
           </li>
         </ul>
-        <div class="addcategory" @click="$router.push('/category')"><span class="iconfont iconjia"></span></div>
+        <div class="addcategory" @click="$router.push('/category')">
+          <span class="iconfont iconjia"></span>
+        </div>
       </div>
     </header>
     <main>
@@ -176,10 +178,10 @@ export default {
   },
   created() {
     //获取栏目列表数据
-    this.$axios.get("/category").then((res) => {
-      let categoryArr = [];
+    let categoryArr = [];
 
-      categoryArr = res.data.data.category.slice(0, 10);
+    if (localStorage.activeCategory) {
+      categoryArr = JSON.parse(localStorage.activeCategory);
 
       this.postContent = categoryArr.map((item) => {
         return {
@@ -193,7 +195,24 @@ export default {
       });
 
       this.getNewsList();
-    });
+    } else {
+      this.$axios.get("/category").then((res) => {
+        categoryArr = res.data.data.category.slice(0, 7);
+
+        this.postContent = categoryArr.map((item) => {
+          return {
+            ...item,
+            newList: [],
+            currentPage: 1,
+            pageSize: 10,
+            finished: false,
+            loading: false,
+          };
+        });
+
+        this.getNewsList();
+      });
+    }
   },
   watch: {
     currentIndex() {
