@@ -104,16 +104,17 @@
         </div>
       </div>
 
+      <!-- 搜索输入内容时显示相似列表 -->
       <div class="beforeSearch" v-show="maybeNews.length > 0">
         <ul>
           <li v-for="(item, index) in maybeNews" :key="'maybeNews' + index">
-            <router-link :to="'/searchdetails?keyword=' + item.newsTitle">
+            <div @click="showArticle(item.newsTitle)">
               <p>
                 <i class="iconfont iconsousuo"></i>
                 {{ item.newsTitle }}
                 <span class="iconfont iconjiantou-zuoshang"></span>
               </p>
-            </router-link>
+            </div>
           </li>
         </ul>
       </div>
@@ -147,7 +148,10 @@ export default {
     };
   },
   created() {
-    if (this.$route.query.keyword !== undefined && this.$route.query.keyword != '') {
+    if (
+      this.$route.query.keyword !== undefined &&
+      this.$route.query.keyword != ""
+    ) {
       this.keyword = this.$route.query.keyword;
 
       //输入框有内容时，显示清除按钮，隐藏滚动列表
@@ -223,6 +227,27 @@ export default {
     },
     search(item) {
       this.$router.push("/searchdetails?keyword=" + item);
+    },
+    showArticle(keyword) {
+      //当用户点击搜索按钮时，获取关键字并存入历史记录
+      let history = [];
+
+      if (localStorage.searchHistory) {
+        history = JSON.parse(localStorage.searchHistory);
+
+        if (!(history instanceof Array)) {
+          history = [];
+        }
+      }
+
+      history.unshift(keyword);
+
+      this.search(keyword);
+
+      //去除重复的历史记录，最多保存七条历史记录
+      let historys = new Set(history);
+      history = Array.from(historys);
+      localStorage.searchHistory = JSON.stringify(history.slice(0, 7));
     },
     getKeyword() {
       //当用户点击搜索按钮时，获取关键字并存入历史记录
@@ -474,7 +499,7 @@ header {
     li {
       border-bottom: 1px solid #f1efef;
 
-      a {
+      div {
         display: block;
         height: 40 / 360 * 100vw;
         margin: 0;

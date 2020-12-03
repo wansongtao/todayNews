@@ -18,6 +18,11 @@ axios.interceptors.request.use(config => {
   return config;
 });
 
+// 将所有 Toast 的展示时长设置为 1500 毫秒
+Toast.setDefaultOptions({
+  duration: 1500
+});
+
 //axios响应拦截器
 axios.interceptors.response.use(res => {
   const {
@@ -29,7 +34,11 @@ axios.interceptors.response.use(res => {
 
   if (statusCode == 500) {
     //token验证失败
-    router.replace('/login');
+    Toast.fail(message || '用户身份过期，请重新登录');
+    
+    setTimeout(() => {
+      router.replace('/login');
+    }, 1500);
   } else if (codeRegExp.test(statusCode)) {
     Toast.fail(message || '服务器繁忙，请稍后再试');
   }
