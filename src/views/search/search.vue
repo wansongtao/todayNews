@@ -34,6 +34,7 @@
             v-focus
             @input="searchInput"
           />
+          <!-- 清空按钮 -->
           <span
             class="iconfont iconguanbi"
             v-show="isShow.clearSearch"
@@ -206,6 +207,8 @@ export default {
     },
     clearInput() {
       this.keyword = "";
+      this.isShow.swipe = true;
+      this.isShow.clearSearch = false;
       this.$refs.searchInput.focus();
     },
     searchInput(e) {
