@@ -236,6 +236,29 @@ main {
   .content {
     margin: 20 / 360 * 100vw 0;
 
+    /deep/ .poem {
+      text-align: center;
+
+      h4 {
+        color: #000;
+        font-size: 16 / 360 * 100vw;
+        line-height: 30 / 360 * 100vw;
+      }
+
+      h5 {
+        color: rgb(155, 151, 151);
+        font-size: 15 / 360 * 100vw;
+        line-height: 25 / 360 * 100vw;
+      }
+
+      p {
+        text-indent: 0em;
+        color: #000;
+        font-size: 14 / 360 * 100vw;
+        line-height: 20 / 360 * 100vw;
+      }
+    }
+
     /deep/ p {
       text-indent: 2em;
       color: #000;
@@ -256,6 +279,7 @@ main {
       text-align: right;
       font-size: 14 / 360 * 100vw;
       line-height: 20 / 360 * 100vw;
+      color: #bdb7b7;
     }
   }
 
