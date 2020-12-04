@@ -34,27 +34,47 @@
           </span>
           {{ newDetails.newsHot || 0 }}
         </div>
-        <div><span class="iconfont iconcai1"></span>10</div>
+        <div
+          class="iconfont iconlogin_"
+          @click="$toast('该功能正在加紧开发中')"
+        ></div>
       </div>
     </main>
 
     <!-- 评论 -->
     <footer>
       <div class="comment_demo">
-        <h4>精彩跟帖</h4>
+        <h4>精彩评论</h4>
+
+        <!-- 评论 -->
         <div class="comment_list">
+          <!-- 发布主评论的用户信息 -->
           <div class="comment_listtop">
             <img src="../assets/user.jpg" alt="头像" />
             <div>
               <span class="username">浮生若梦</span><br />
               <span class="date">2020-11-20</span>
             </div>
-            <span> 回复 </span>
+            <span>回复</span>
           </div>
+
+          <!-- 主评论内容和子评论列表 -->
           <div class="comment_list_content">
             <p>不过是大梦一场空</p>
+
+            <!-- 子评论列表 -->
+            <div class="childcomment">
+              <p>
+                <span>幸运</span>:
+                不过是大梦一场空，不过是孤影照惊鸿，不过是白驹之过一场梦。
+              </p>
+              <p><span>幸运</span><span>@倒霉</span>: 不过是孤影照惊鸿</p>
+              <p><span>幸运</span>: 不过是孤影照惊鸿</p>
+              <span>更多回复...<i class="iconfont iconright"></i></span>
+            </div>
           </div>
         </div>
+
       </div>
       <!-- <div class="space">
         暂无跟帖,抢占沙发
@@ -309,6 +329,7 @@ main {
 
 footer {
   border-top: 5px solid rgb(214, 212, 212);
+
   h4 {
     font-family: "Kaiti", sans-serif;
     font-size: 18 / 360 * 100vw;
@@ -318,16 +339,17 @@ footer {
   }
 
   .comment_list {
-    padding: 10 / 360 * 100vw;
+    padding: 5 / 360 * 100vw 10 / 360 * 100vw;
     border-bottom: 1px solid rgb(190, 186, 186);
+
     .comment_listtop {
       display: flex;
 
       img {
         display: block;
-        width: 60 / 360 * 100vw;
-        height: 60 / 360 * 100vw;
-        border-radius: 30 / 360 * 100vw;
+        width: 40 / 360 * 100vw;
+        height: 40 / 360 * 100vw;
+        border-radius: 20 / 360 * 100vw;
       }
 
       div {
@@ -352,10 +374,39 @@ footer {
     }
 
     .comment_list_content {
-      padding: 10 / 360 * 100vw 0;
+      padding: 10 / 360 * 100vw 0 10 / 360 * 100vw 40 / 360 * 100vw;
+
       p {
-        text-indent: 2em;
+        line-height: 20 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
+      }
+
+      .childcomment {
+        margin: 10 / 360 * 100vw 0;
+        padding: 5 / 360 * 100vw;
+        background: rgb(226, 224, 224);
+
+        p {
+          margin: 5 / 360 * 100vw 0;
+          line-height: 20 / 360 * 100vw;
+          font-size: 14 / 360 * 100vw;
+
+          span {
+            color: #3c87a5;
+          }
+        }
+
+        span {
+          line-height: 16 / 360 * 100vw;
+          font-size: 12 / 360 * 100vw;
+          color: #3c87a5;
+
+          i {
+            line-height: 16 / 360 * 100vw;
+            font-size: 12 / 360 * 100vw;
+            color: #3c87a5;
+          }
+        }
       }
     }
   }
