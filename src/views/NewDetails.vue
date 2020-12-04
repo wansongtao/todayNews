@@ -47,38 +47,54 @@
         <h4>精彩评论</h4>
 
         <!-- 评论 -->
-        <div class="comment_list">
-          <!-- 发布主评论的用户信息 -->
-          <div class="comment_listtop">
-            <img src="../assets/user.jpg" alt="头像" />
-            <div>
-              <span class="username">浮生若梦</span><br />
-              <span class="date">2020-11-20</span>
+        <div v-if="commentList.length > 0">
+          <div
+            class="comment_list"
+            v-for="(item, index) in commentList"
+            :key="'commentlist' + index"
+          >
+            <!-- 发布主评论的用户信息 -->
+            <div class="comment_listtop">
+              <img
+                :src="item.head_img | imgUrl"
+                alt="头像"
+                v-if="item.head_img != null"
+              />
+              <img src="../assets/user.jpg" alt="" v-else />
+              <div>
+                <span class="username">{{ item.nickName || "浮生若梦" }}</span
+                ><br />
+                <span class="date">{{
+                  item.commentDate.substr(0, 10) || "2020-11-11"
+                }}</span>
+              </div>
+              <span>回复</span>
             </div>
-            <span>回复</span>
-          </div>
 
-          <!-- 主评论内容和子评论列表 -->
-          <div class="comment_list_content">
-            <p>不过是大梦一场空</p>
+            <!-- 主评论内容和子评论列表 -->
+            <div class="comment_list_content">
+              <p>{{ item.commentContent || "不过是大梦一场空" }}</p>
 
-            <!-- 子评论列表 -->
-            <div class="childcomment">
-              <p>
-                <span>幸运</span>:
-                不过是大梦一场空，不过是孤影照惊鸿，不过是白驹之过一场梦。
-              </p>
-              <p><span>幸运</span><span>@倒霉</span>: 不过是孤影照惊鸿</p>
-              <p><span>幸运</span>: 不过是孤影照惊鸿</p>
-              <span>更多回复...<i class="iconfont iconright"></i></span>
+              <!-- 子评论列表 -->
+              <div class="childcomment" v-if="item.childComment.length > 0">
+                <p
+                  v-for="(value, key) in item.childComment"
+                  :key="'childComment' + key"
+                >
+                  <span>{{ value.nickName || "幸运" }}</span>
+                  <span v-if="value.replyUserName != null">@{{value.replyUserName}}</span>
+                  ：{{ value.commentContent || "不过是孤影照惊鸿" }}
+                </p>
+                <span>更多回复...<i class="iconfont iconright"></i></span>
+              </div>
             </div>
           </div>
         </div>
 
+        <div class="space" v-if="commentList.length == 0">
+          暂无跟帖,抢占沙发
+        </div>
       </div>
-      <!-- <div class="space">
-        暂无跟帖,抢占沙发
-      </div> -->
 
       <div class="writeComment">
         <div class="inputBtn">写跟帖</div>
@@ -105,6 +121,7 @@ export default {
       },
       isFollow: false,
       isLike: false,
+      commentList: [],
     };
   },
   created() {
@@ -120,6 +137,17 @@ export default {
           this.newDetails = data.newDetails;
           this.isFollow = data.isFollow;
           this.isLike = data.isLike;
+        }
+      });
+
+      this.$axios.get('/newscomment', {
+        params: {
+          newsId: this.$route.params.id,
+        },
+      })
+      .then(res => {
+        if (res.data.statusCode == 200) {
+          this.commentList = res.data.data.commentList;
         }
       });
   },
