@@ -68,7 +68,7 @@
                   item.commentDate.substr(0, 10) || "2020-11-11"
                 }}</span>
               </div>
-              <span>回复</span>
+              <span @click="showInput">回复</span>
             </div>
 
             <!-- 主评论内容和子评论列表 -->
@@ -82,10 +82,17 @@
                   :key="'childComment' + key"
                 >
                   <span>{{ value.nickName || "幸运" }}</span>
-                  <span v-if="value.replyUserName != null">@{{value.replyUserName}}</span>
+
+                  <strong v-if="value.replyUserName != null">回复</strong>
+                  <span v-if="value.replyUserName != null"
+                    >@{{ value.replyUserName }}</span
+                  >
+
                   ：{{ value.commentContent || "不过是孤影照惊鸿" }}
                 </p>
-                <span>更多回复...<i class="iconfont iconright"></i></span>
+                <span v-if="item.childComment.length > 2"
+                  >更多回复...<i class="iconfont iconright"></i
+                ></span>
               </div>
             </div>
           </div>
@@ -97,10 +104,30 @@
       </div>
 
       <div class="writeComment">
-        <div class="inputBtn">写跟帖</div>
-        <span class="iconfont iconxinxi"><span class="message">102</span></span>
-        <span class="iconfont iconshoucang"></span>
-        <span class="iconfont iconfenxiang"></span>
+        <!-- 评论框未激活状态 -->
+        <div class="defInput" v-show="!isActiveInput">
+          <div class="inputBtn" @click="showInput">写跟帖</div>
+          <span class="iconfont iconxinxi"
+            ><span class="message">{{
+              newDetails.commentNums || 0
+            }}</span></span
+          >
+          <span class="iconfont iconshoucang"></span>
+          <span class="iconfont iconfenxiang"></span>
+        </div>
+
+        <!-- 评论框激活状态 -->
+        <div class="activeInput" v-show="isActiveInput">
+          <input
+            ref="comInput"
+            type="text"
+            v-model="commentContent"
+            class="commentInput"
+            placeholder="发条友善的评论"
+            @blur="inputBlur"
+          />
+          <div class="sendBtn">发表</div>
+        </div>
       </div>
     </footer>
   </div>
@@ -118,13 +145,17 @@ export default {
         newsContent: "<div>...</div>",
         newsHot: 11,
         newsDate: "2020-11-11",
+        commentNums: 0,
       },
       isFollow: false,
       isLike: false,
+      isActiveInput: false,
+      commentContent: "",
       commentList: [],
     };
   },
   created() {
+    //请求新闻内容
     this.$axios
       .get("/getnewcontent", {
         params: {
@@ -140,12 +171,14 @@ export default {
         }
       });
 
-      this.$axios.get('/newscomment', {
+    //请求评论内容
+    this.$axios
+      .get("/newscomment", {
         params: {
           newsId: this.$route.params.id,
         },
       })
-      .then(res => {
+      .then((res) => {
         if (res.data.statusCode == 200) {
           this.commentList = res.data.data.commentList;
         }
@@ -210,6 +243,20 @@ export default {
           });
       }
     },
+    showInput() {
+      //显示评论框，并聚焦到评论框
+      this.isActiveInput = true;
+
+      this.$nextTick(() => {
+        this.$refs.comInput.focus();
+      });
+    },
+    inputBlur() {
+      //当评论输入框失去焦点且用户未输入任何内容时，隐藏评论输入框
+      if (this.commentContent.length == 0) {
+        this.isActiveInput = false;
+      }
+    }
   },
 };
 </script>
@@ -419,6 +466,11 @@ footer {
           line-height: 20 / 360 * 100vw;
           font-size: 14 / 360 * 100vw;
 
+          strong {
+            font-size: 12 / 360 * 100vw;
+            font-weight: 500;
+          }
+
           span {
             color: #3c87a5;
           }
@@ -450,40 +502,69 @@ footer {
   .writeComment {
     position: fixed;
     bottom: 0;
-    display: flex;
     width: 100% - 20 / 360 * 100vw;
     padding: 10 / 360 * 100vw;
-    align-items: center;
-    justify-content: space-between;
     background: rgb(165, 161, 161);
 
-    div {
-      flex: 1;
-      padding: 0 15 / 360 * 100vw;
-      height: 30 / 360 * 100vw;
-      font-size: 12 / 360 * 100vw;
-      line-height: 30 / 360 * 100vw;
-      color: rgb(128, 121, 121);
-      background: #d7d7d7;
-      border-radius: 15 / 360 * 100vw;
+    .defInput {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      div {
+        flex: 1;
+        padding: 0 15 / 360 * 100vw;
+        height: 30 / 360 * 100vw;
+        font-size: 12 / 360 * 100vw;
+        line-height: 30 / 360 * 100vw;
+        color: rgb(128, 121, 121);
+        background: #d7d7d7;
+        border-radius: 15 / 360 * 100vw;
+      }
+
+      span {
+        position: relative;
+        padding: 0 10 / 360 * 100vw;
+        font-size: 16 / 360 * 100vw;
+
+        .message {
+          position: absolute;
+          display: block;
+          top: -8 / 360 * 100vw;
+          left: 15 / 360 * 100vw;
+          padding: 0 5 / 360 * 100vw;
+          font-size: 10 / 360 * 100vw;
+          line-height: 14 / 360 * 100vw;
+          background: red;
+          color: #fff;
+          border-radius: 7 / 360 * 100vw;
+        }
+      }
     }
 
-    span {
-      position: relative;
-      padding: 0 10 / 360 * 100vw;
-      font-size: 16 / 360 * 100vw;
+    .activeInput {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-      .message {
-        position: absolute;
-        display: block;
-        top: -8 / 360 * 100vw;
-        left: 15 / 360 * 100vw;
-        padding: 0 5 / 360 * 100vw;
-        font-size: 10 / 360 * 100vw;
-        line-height: 14 / 360 * 100vw;
-        background: red;
+      .commentInput {
+        flex: 1;
+        padding: 0 15 / 360 * 100vw;
+        height: 30 / 360 * 100vw;
+        font-size: 12 / 360 * 100vw;
+        line-height: 30 / 360 * 100vw;
+        color: rgb(0, 0, 0);
+        background: #d7d7d7;
+        border: none;
+        border-radius: 15 / 360 * 100vw;
+      }
+
+      .sendBtn {
+        padding: 0 10 / 360 * 100vw;
+        height: 30 / 360 * 100vw;
+        line-height: 30 / 360 * 100vw;
+        font-size: 14 / 360 * 100vw;
         color: #fff;
-        border-radius: 7 / 360 * 100vw;
       }
     }
   }
