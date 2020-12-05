@@ -68,15 +68,17 @@
                   item.commentDate.substr(0, 10) || "2020-11-11"
                 }}</span>
               </div>
-              <span @click="showInput">回复</span>
+              <span @click="showInput(item.nickName)">回复</span>
             </div>
 
             <!-- 主评论内容和子评论列表 -->
             <div class="comment_list_content">
-              <p>{{ item.commentContent || "不过是大梦一场空" }}</p>
+              <!-- 主评论内容 -->
+              <p @click="showInput(item.nickName)">{{ item.commentContent || "不过是大梦一场空" }}</p>
 
               <!-- 子评论列表 -->
               <div class="childcomment" v-if="item.childComment.length > 0">
+                <!-- 子评论内容 -->
                 <p
                   v-for="(value, key) in item.childComment"
                   :key="'childComment' + key"
@@ -90,9 +92,14 @@
 
                   ：{{ value.commentContent || "不过是孤影照惊鸿" }}
                 </p>
-                <span v-if="item.childComment.length > 2"
-                  >更多回复...<i class="iconfont iconright"></i
-                ></span>
+
+                <span 
+                v-if="item.childComment.length > 2"
+                @click="getMoreChildComment(item.parentCommentId, index)"
+                >
+                  更多回复
+                  <i class="iconfont iconright"></i>
+                </span>
               </div>
             </div>
           </div>
@@ -106,7 +113,7 @@
       <div class="writeComment">
         <!-- 评论框未激活状态 -->
         <div class="defInput" v-show="!isActiveInput">
-          <div class="inputBtn" @click="showInput">写跟帖</div>
+          <div class="inputBtn" @click="showInput()">写跟帖</div>
           <span class="iconfont iconxinxi"
             ><span class="message">{{
               newDetails.commentNums || 0
@@ -123,7 +130,7 @@
             type="text"
             v-model="commentContent"
             class="commentInput"
-            placeholder="发条友善的评论"
+            :placeholder="placeholder"
             @blur="inputBlur"
           />
           <div class="sendBtn">发表</div>
@@ -137,6 +144,7 @@
 export default {
   data() {
     return {
+      newsId: 0,
       newDetails: {
         newsId: 10001,
         userId: 1001,
@@ -151,15 +159,18 @@ export default {
       isLike: false,
       isActiveInput: false,
       commentContent: "",
+      placeholder: "发条友善的评论",
       commentList: [],
     };
   },
   created() {
+    this.newsId = this.$route.params.id;
+
     //请求新闻内容
     this.$axios
       .get("/getnewcontent", {
         params: {
-          newsId: this.$route.params.id,
+          newsId: this.newsId,
         },
       })
       .then((res) => {
@@ -175,7 +186,7 @@ export default {
     this.$axios
       .get("/newscomment", {
         params: {
-          newsId: this.$route.params.id,
+          newsId: this.newsId,
         },
       })
       .then((res) => {
@@ -243,9 +254,15 @@ export default {
           });
       }
     },
-    showInput() {
+    showInput(replyName) {
       //显示评论框，并聚焦到评论框
       this.isActiveInput = true;
+
+      if (replyName == undefined) {
+        this.placeholder = '发条友善的评论';
+      } else {
+        this.placeholder = '回复 @' + replyName;
+      }
 
       this.$nextTick(() => {
         this.$refs.comInput.focus();
@@ -256,6 +273,24 @@ export default {
       if (this.commentContent.length == 0) {
         this.isActiveInput = false;
       }
+    },
+    getMoreChildComment(parentId, index) {
+      this.$axios.get('/childcomment', {
+        params: {
+          newsId: this.newsId,
+          parentId
+        }
+      })
+      .then(res => {
+        let data = res.data;
+
+        if (data.statusCode == 200) {
+          this.commentList[index].childComment = this.commentList[index].childComment.concat(data.data.childComment);
+        }
+        else if (data.statusCode == 201) {
+          this.$toast.success(data.message || '没有更多评论了');
+        }
+      });
     }
   },
 };
