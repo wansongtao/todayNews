@@ -43,7 +43,7 @@
 
     <!-- 评论 -->
     <footer>
-      <div class="comment_demo"  @click.self="hideInput">
+      <div class="comment_demo" @click.self="hideInput">
         <h4 @click.self="hideInput">精彩评论</h4>
 
         <!-- 评论 -->
@@ -61,7 +61,7 @@
                 v-if="item.head_img != null"
                 @click="hideInput"
               />
-              <img src="../assets/user.jpg" alt="" v-else @click="hideInput"/>
+              <img src="../assets/user.jpg" alt="" v-else @click="hideInput" />
               <div @click="hideInput">
                 <span class="username">{{ item.nickName || "浮生若梦" }}</span
                 ><br />
@@ -69,13 +69,17 @@
                   item.commentDate.substr(0, 10) || "2020-11-11"
                 }}</span>
               </div>
-              <span @click="showInput(item.nickName, item.parentCommentId)">回复</span>
+              <span @click="showInput(item.nickName, item.parentCommentId)"
+                >回复</span
+              >
             </div>
 
             <!-- 主评论内容和子评论列表 -->
             <div class="comment_list_content" @click.self="hideInput">
               <!-- 主评论内容 -->
-              <p @click="showInput(item.nickName, item.parentCommentId)">{{ item.commentContent || "不过是大梦一场空" }}</p>
+              <p @click="showInput(item.nickName, item.parentCommentId)">
+                {{ item.commentContent || "不过是大梦一场空" }}
+              </p>
 
               <!-- 子评论列表 -->
               <div class="childcomment" v-if="item.childComment.length > 0">
@@ -83,7 +87,13 @@
                 <p
                   v-for="(value, key) in item.childComment"
                   :key="'childComment' + key"
-                  @click="showInput(value.nickName, value.childCommentId, value.parentId)"
+                  @click="
+                    showInput(
+                      value.nickName,
+                      value.parentId,
+                      value.childCommentId 
+                    )
+                  "
                 >
                   <span>{{ value.nickName || "幸运" }}</span>
 
@@ -95,9 +105,9 @@
                   ：{{ value.commentContent || "不过是孤影照惊鸿" }}
                 </p>
 
-                <span 
-                v-if="item.childComment.length > 2 && item.isMore"
-                @click="getMoreChildComment(item.parentCommentId, index)"
+                <span
+                  v-if="item.childComment.length > 2 && item.isMore"
+                  @click="getMoreChildComment(item.parentCommentId, index)"
                 >
                   更多回复
                   <i class="iconfont iconright"></i>
@@ -168,8 +178,8 @@ export default {
         // 回复的评论id
         replyCommentId: null,
         // 评论内容
-        commentContent: null
-      }
+        commentContent: null,
+      },
     };
   },
   created() {
@@ -192,22 +202,7 @@ export default {
       });
 
     //请求评论内容
-    this.$axios
-      .get("/newscomment", {
-        params: {
-          newsId: this.newsId,
-        },
-      })
-      .then((res) => {
-        if (res.data.statusCode == 200) {
-          this.commentList = res.data.data.commentList.map(item => {
-            return {
-              ...item,
-              isMore: true
-            }
-          });
-        }
-      });
+    this.getComment();
   },
   methods: {
     following() {
@@ -268,20 +263,20 @@ export default {
           });
       }
     },
-    showInput(replyName, replyCommentId, parentId) {
+    showInput(replyName, parentId, replyCommentId) {
       //显示评论框，并聚焦到评论框
       this.isActiveInput = true;
 
       if (replyName == undefined) {
-        this.placeholder = '发条友善的评论';
+        this.placeholder = "发条友善的评论";
       } else {
-        this.placeholder = '回复 @' + replyName;
+        this.placeholder = "回复 @" + replyName;
 
         //将回复评论需要的信息保存起来
         this.pubComment.parentId = parentId;
         this.pubComment.replyCommentId = replyCommentId;
       }
-      
+
       this.$nextTick(() => {
         this.$refs.comInput.focus();
       });
@@ -292,31 +287,54 @@ export default {
       this.pubComment.replyCommentId = null;
       this.pubComment.commentContent = null;
     },
+    getComment() {
+      this.$axios
+        .get("/newscomment", {
+          params: {
+            newsId: this.newsId,
+          },
+        })
+        .then((res) => {
+          if (res.data.statusCode == 200) {
+            this.commentList = res.data.data.commentList.map((item) => {
+              return {
+                ...item,
+                isMore: true,
+              };
+            });
+          }
+        });
+    },
     getMoreChildComment(parentId, index) {
-      this.$axios.get('/childcomment', {
-        params: {
-          newsId: this.newsId,
-          parentId
-        }
-      })
-      .then(res => {
-        let data = res.data;
+      this.$axios
+        .get("/childcomment", {
+          params: {
+            newsId: this.newsId,
+            parentId,
+          },
+        })
+        .then((res) => {
+          let data = res.data;
 
-        if (data.statusCode == 200) {
-          this.commentList[index].isMore = false;
-          this.commentList[index].childComment = this.commentList[index].childComment.concat(data.data.childComment);
-        }
-        else if (data.statusCode == 201) {
-          this.commentList[index].isMore = false;
-          this.$toast.success(data.message || '没有更多评论了');
-        }
-      });
+          if (data.statusCode == 200) {
+            this.commentList[index].isMore = false;
+            this.commentList[index].childComment = this.commentList[
+              index
+            ].childComment.concat(data.data.childComment);
+          } else if (data.statusCode == 201) {
+            this.commentList[index].isMore = false;
+            this.$toast.success(data.message || "没有更多评论了");
+          }
+        });
     },
     review() {
       //发表评论
       let comment = this.pubComment;
-      if (comment.commentContent == null || comment.commentContent.length == 0) {
-        this.$toast.fail('请先输入评论内容');
+      if (
+        comment.commentContent == null ||
+        comment.commentContent.length == 0
+      ) {
+        this.$toast.fail("请先输入评论内容");
         this.$refs.comInput.focus();
         return;
       }
@@ -330,16 +348,16 @@ export default {
         data.replyCommentId = comment.replyCommentId;
       }
 
-      if(comment.parentId != null) {
+      if (comment.parentId != null) {
         data.parentId = comment.parentId;
       }
-      
-      this.$axios.post('/review', data).then(res => {
+
+      this.$axios.post("/review", data).then((res) => {
         if (res.data.statusCode == 200) {
-          this.$toast.success(res.data.message || '发表成功');
-        }
-        else {
-          this.$toast.fail(res.data.message || '发表失败');
+          this.$toast.success(res.data.message || "发表成功");
+          this.getComment();
+        } else {
+          this.$toast.fail(res.data.message || "发表失败");
         }
 
         this.hideInput();
