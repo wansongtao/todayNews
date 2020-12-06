@@ -14,6 +14,7 @@
             v-for="(item, index) in newList"
             :newsData="item"
             :key="index + 'newlist'"
+            @click.native="jumpPage(item.newsId)"
           ></news-list>
         </van-list>
       </article>
@@ -48,10 +49,10 @@ export default {
           params: { pageSize: this.pageSize, currentPage: this.currentPage },
         })
         .then((res) => {
-          this.loading = false;  //加载完成了，收到服务器的响应了
+          this.loading = false; //加载完成了，收到服务器的响应了
 
           let data = res.data;
-          
+
           if (data.statusCode == 200) {
             this.newList = this.newList.concat(data.data.newList);
 
@@ -59,11 +60,9 @@ export default {
               //当返回的数据不足时，设置为加载完状态
               this.finished = true;
             }
-
           } else if (data.statusCode == 201 && this.currentPage == 0) {
             this.$toast.fail(data.message || "您没有收藏任何新闻");
-          }
-          else {
+          } else {
             this.finished = true;
           }
         });
@@ -71,7 +70,11 @@ export default {
     LoadNews() {
       this.currentPage++;
       this.getCollectNews();
-    }
+    },
+    jumpPage(id) {
+      //跳转并传参
+      this.$router.push({ name: "NewDetails", params: { id: id } });
+    },
   },
 };
 </script>
