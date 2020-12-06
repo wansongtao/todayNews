@@ -91,7 +91,7 @@
                     showInput(
                       value.nickName,
                       value.parentId,
-                      value.childCommentId 
+                      value.childCommentId
                     )
                   "
                 >
@@ -126,13 +126,24 @@
         <!-- 评论框未激活状态 -->
         <div class="defInput" v-show="!isActiveInput">
           <div class="inputBtn" @click="showInput()">写跟帖</div>
+
+          <!-- 评论数 -->
           <span class="iconfont iconxinxi"
             ><span class="message">{{
               newDetails.commentNums || 0
             }}</span></span
           >
-          <span class="iconfont iconshoucang"></span>
-          <span class="iconfont iconfenxiang"></span>
+          <!-- 收藏按钮 -->
+          <span
+            :class="['iconfont', 'iconshoucang', isCollect ? 'collect' : '']"
+            @click="collectNews"
+          ></span>
+
+          <!-- 分享按钮 -->
+          <span
+            class="iconfont iconfenxiang"
+            @click="$toast('该功能正在加紧开发中')"
+          ></span>
         </div>
 
         <!-- 评论框激活状态 -->
@@ -169,6 +180,7 @@ export default {
       isFollow: false,
       isLike: false,
       isActiveInput: false,
+      isCollect: false,
       placeholder: "发条友善的评论",
       commentList: [],
       // 回复评论需要的信息
@@ -198,6 +210,7 @@ export default {
           this.newDetails = data.newDetails;
           this.isFollow = data.isFollow;
           this.isLike = data.isLike;
+          this.isCollect = data.isCollect;
         }
       });
 
@@ -362,6 +375,30 @@ export default {
 
         this.hideInput();
       });
+    },
+    collectNews() {
+      if (!this.isCollect) {
+        //收藏新闻
+        this.$axios
+          .get("/collectnews", { params: { newsId: this.newsId } })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.$toast.success("收藏成功");
+              this.isCollect = true;
+            }
+          });
+      } else {
+        //取消收藏新闻
+        this.$axios
+          .get("/uncollectnews", { params: { newsId: this.newsId } })
+          .then((res) => {
+            if (res.data.statusCode == 200) {
+              this.$toast.success('取消收藏成功');
+
+              this.isCollect = false;
+            }
+          });
+      }
     },
   },
 };
@@ -672,6 +709,10 @@ footer {
         font-size: 14 / 360 * 100vw;
         color: #fff;
       }
+    }
+
+    .collect {
+      color: #ff0000;
     }
   }
 }
