@@ -66,7 +66,18 @@ export default {
           for(let key in this.rules) {
             //验证用户输入是否合法
             if(!this.rules[key].test(this[key])) {
-              this.$toast.fail('请输入正确的信息');
+              let message = '请输入正确的信息';
+
+              if (key == 'userName') {
+                message = '请输入3-6位字母/数字组合且以字母开头的用户名';
+              }
+              else if (key == 'nickName') {
+                message = '请输入2-7位中文昵称';
+              }
+              else if (key == 'userPwd') {
+                message = '请输入6-16位字母、数字、下划线组合且以字母开头的密码';
+              }
+              this.$toast.fail(message);
 
               return false;
             }
