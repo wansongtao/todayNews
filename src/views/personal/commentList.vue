@@ -133,6 +133,7 @@ export default {
     padding: 10 / 360 * 100vw 0 10 / 360 * 100vw 40 / 360 * 100vw;
 
     p {
+      word-wrap:break-word;
       line-height: 20 / 360 * 100vw;
       font-size: 14 / 360 * 100vw;
     }
@@ -146,6 +147,7 @@ export default {
         margin: 5 / 360 * 100vw 0;
         line-height: 20 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
+        word-wrap:break-word;
 
         strong {
           font-size: 12 / 360 * 100vw;

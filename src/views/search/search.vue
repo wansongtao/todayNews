@@ -454,6 +454,7 @@ header {
 
     i {
       float: right;
+      text-align: center;
       width: 30 / 360 * 100vw;
       font-size: 12 / 360 * 100vw;
       line-height: 30 / 360 * 100vw;
