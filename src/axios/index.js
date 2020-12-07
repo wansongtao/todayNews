@@ -32,14 +32,16 @@ axios.interceptors.response.use(res => {
 
   let codeRegExp = /^[34]\d{2}$/;
 
-  if (statusCode == 500) {
+  if (statusCode == 500 || statusCode == 311) {
     //token验证失败
-    Toast.fail(message || '用户身份过期，请重新登录');
+    Toast.fail(message || '请重新登录');
     
     setTimeout(() => {
       router.replace('/login');
+      delete localStorage.token;
     }, 1500);
-  } else if (codeRegExp.test(statusCode)) {
+  }
+  else if (codeRegExp.test(statusCode)) {
     Toast.fail(message || '服务器繁忙，请稍后再试');
   }
 
