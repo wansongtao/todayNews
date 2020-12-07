@@ -7,7 +7,7 @@ import {
 import 'vant/lib/toast/style';
 
 //设置服务器默认路径
-axios.defaults.baseURL = 'http://192.168.70.68:5050';
+axios.defaults.baseURL = 'http://127.0.0.1:5050';
 
 //axios请求拦截器，统一添加token
 axios.interceptors.request.use(config => {
