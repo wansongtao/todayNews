@@ -122,6 +122,7 @@
         </div>
       </div>
 
+      <!-- 底部输入框 -->
       <div class="writeComment">
         <!-- 评论框未激活状态 -->
         <div class="defInput" v-show="!isActiveInput">
@@ -412,20 +413,21 @@ export default {
 }
 
 header {
-  // position: fixed;
-  // top: 0;
-  // left: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   width: 100% - (20 / 360 * 100vw);
   padding: 10 / 360 * 100vw;
   justify-content: space-between;
   align-items: center;
+  background: rgb(228, 227, 227);
 
   .logo_btn {
     width: 70 / 360 * 100vw;
 
     i {
-      color: rgb(126, 123, 123);
+      color: rgb(77, 75, 75);
       font-size: 20 / 360 * 100vw;
       line-height: 20 / 360 * 100vw;
     }
@@ -456,8 +458,7 @@ header {
 }
 
 main {
-  // margin-top: 10 / 360 * 100vw;
-  padding: 10 / 360 * 100vw;
+  padding: 45 / 360 * 100vw 10 / 360 * 100vw 10 / 360 * 100vw 10 / 360 * 100vw;
   h4 {
     // text-align: center;
     font-size: 18 / 360 * 100vw;
