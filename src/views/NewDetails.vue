@@ -596,6 +596,8 @@ footer {
       padding: 10 / 360 * 100vw 0 10 / 360 * 100vw 40 / 360 * 100vw;
 
       p {
+        // 自动换行
+        word-wrap:break-word;
         line-height: 20 / 360 * 100vw;
         font-size: 14 / 360 * 100vw;
       }
