@@ -1,6 +1,6 @@
 <template>
   <div class="edit_container">
-    <head-title title="编辑资料" @back="$router.back();"></head-title>
+    <head-title title="编辑资料" @back="$router.back()"></head-title>
 
     <div class="userimg">
       <img :src="head_img | imgUrl" alt="头像" v-if="head_img != ''" />
@@ -129,13 +129,20 @@ export default {
   },
   created() {
     this.$axios.get("/userdetail").then((res) => {
-      const { gender, head_img, nickName, userName } = res.data.data.userDetail;
+      if (res.data.statusCode == 200) {
+        const {
+          gender,
+          head_img,
+          nickName,
+          userName,
+        } = res.data.data.userDetail;
 
-      this.gender = parseInt(gender);
-      if (head_img) {
-        this.head_img = head_img;
+        this.gender = parseInt(gender);
+        if (head_img) {
+          this.head_img = head_img;
+        }
+        this.nickname = nickName || userName;
       }
-      this.nickname = nickName || userName;
     });
   },
   methods: {
