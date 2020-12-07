@@ -369,6 +369,7 @@ export default {
         if (res.data.statusCode == 200) {
           this.$toast.success(res.data.message || "发表成功");
           this.getComment();
+          this.newDetails.commentNums++;
         } else {
           this.$toast.fail(res.data.message || "发表失败");
         }

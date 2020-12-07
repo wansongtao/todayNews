@@ -1,21 +1,23 @@
 <template>
   <div class="container">
     <head-title title="我的关注" @back="$router.back()"></head-title>
-    <main>
-      <div class="comment_listtop">
-        <!-- <img
+    <main v-if="followUserList.length > 0">
+      <div
+        class="comment_listtop"
+        v-for="(item, index) in followUserList"
+        :key="index + 'followuserlist'"
+      >
+        <img
           :src="item.head_img | imgUrl"
           alt="头像"
           v-if="item.head_img != null"
-          @click="hideInput"
-        /> -->
-        <img src="../../assets/user.jpg" alt="头像"/>
+        />
+        <img src="../../assets/user.jpg" alt="头像" v-else />
         <div>
-          <span class="username">浮生若梦</span
-          ><br />
-          <span class="date">2020-11-11</span>
+          <span class="username">{{item.nickName || '浮生若梦'}}</span><br />
+          <span class="date">{{item.followDate.substr(0, 10) || '2020-11-11'}}</span>
         </div>
-        <span class="btn"><p>取消关注</p></span>
+        <span class="btn" @click="unFollow(index)"><p>取消关注</p></span>
       </div>
     </main>
   </div>
@@ -24,9 +26,38 @@
 <script>
 import headertitle from "../../components/headertitle";
 export default {
+  data() {
+    return {
+      followUserList: [],
+    };
+  },
   components: {
     "head-title": headertitle,
   },
+  created() {
+    this.$axios.get("/followuserlist").then((res) => {
+      let data = res.data;
+
+      if (data.statusCode == 200) {
+        this.followUserList = data.data.followUserList;
+      } else if (data.statusCode == 201) {
+        this.$toast.fail(data.message || "您没有关注任何用户");
+      }
+    });
+  },
+  methods: {
+    unFollow(index) {
+      let userId = this.followUserList[index].userId;
+      
+      this.$axios.get('/unfollow', {params: {followUserId: userId}}).then(res => {
+        let data = res.data;
+        if (data.statusCode == 200) {
+          this.$toast.success(data.message || '取消关注成功');
+          this.followUserList.splice(index, 1);
+        }
+      });
+    }
+  }
 };
 </script>
 
